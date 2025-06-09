@@ -1,0 +1,136 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  database:
+    image: postgres:15-alpine
+    container_name: timetracker-database
+    environment:
+      POSTGRES_DB: timetracker
+      POSTGRES_USER: timetracker
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/01-init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - timetracker-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U timetracker -d timetracker"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  # Spring Boot Backend API (Java 21)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: timetracker-backend
+    environment:
+      # Spring Profile
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE:-dev}
+
+      # Database Configuration
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/timetracker
+      SPRING_DATASOURCE_USERNAME: timetracker
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-password}
+
+      # JPA/Hibernate Configuration
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_JPA_SHOW_SQL: ${SHOW_SQL:-false}
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+
+      # Flyway Configuration
+      SPRING_FLYWAY_ENABLED: true
+      SPRING_FLYWAY_LOCATIONS: classpath:db/migration
+      SPRING_FLYWAY_BASELINE_ON_MIGRATE: true
+
+      # Server Configuration
+      SERVER_PORT: 8080
+
+      # Logging
+      LOGGING_LEVEL_COM_TIMETRACKER: ${LOG_LEVEL:-INFO}
+      LOGGING_LEVEL_ROOT: ${LOG_LEVEL:-INFO}
+
+      # CORS Configuration (for development)
+      CORS_ALLOWED_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://frontend:3000}
+    ports:
+      - "8080:8080"
+    networks:
+      - timetracker-network
+    depends_on:
+      database:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+  # Nuxt 3 Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: timetracker-frontend
+    environment:
+      # Nuxt Configuration
+      NUXT_PUBLIC_API_BASE: ${API_BASE_URL:-http://localhost:8080/api}
+      NUXT_PUBLIC_APP_MODE: ${APP_MODE:-development}
+
+      # Node Configuration
+      NODE_ENV: ${NODE_ENV:-development}
+      NUXT_HOST: 0.0.0.0
+      NUXT_PORT: 3000
+    ports:
+      - "3000:3000"
+    networks:
+      - timetracker-network
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  # Database Administration Tool (Optional)
+  adminer:
+    image: adminer:latest
+    container_name: timetracker-adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+      ADMINER_DESIGN: pepa-linha
+    ports:
+      - "8081:8080"
+    networks:
+      - timetracker-network
+    depends_on:
+      - database
+    restart: unless-stopped
+    profiles:
+      - dev
+      - admin
+
+# Named volumes for data persistence
+volumes:
+  postgres_data:
+    driver: local
+
+# Custom network for service communication
+networks:
+  timetracker-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

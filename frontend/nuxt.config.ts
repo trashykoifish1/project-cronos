@@ -1,0 +1,112 @@
+import Aura from '@primeuix/themes/aura';
+
+export default defineNuxtConfig({
+  devtools: { enabled: true },
+
+  components: [{
+    path: '~/components',
+    pathPrefix: false,
+  }],
+
+  modules: [
+    '@primevue/nuxt-module',
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
+    '@nuxtjs/tailwindcss'
+  ],
+
+  plugins: [
+    '~/plugins/primevue.client.ts'
+  ],
+
+  primevue: {
+    options: {
+      theme: {
+        preset: Aura,
+        options: {
+          darkModeSelector: 'light',
+        }
+      },
+      ripple: true
+    }
+  },
+
+  tailwindcss: {
+    config: {
+      content: [
+        './components/**/*.{js,vue,ts}',
+        './layouts/**/*.vue',
+        './pages/**/*.vue',
+        './plugins/**/*.{js,ts}',
+        './app.vue',
+        './error.vue'
+      ],
+      theme: {
+        extend: {
+          colors: {
+            // Custom colors for time tracking
+            timesheet: {
+              background: '#fafafa',
+              border: '#e5e7eb',
+              hover: '#f3f4f6',
+              selected: '#dbeafe'
+            }
+          },
+          spacing: {
+            '15': '3.75rem', // For 15-minute intervals
+          },
+          gridTemplateColumns: {
+            'timesheet': '80px repeat(4, 1fr)', // Time label + 4 15-min columns
+          }
+        }
+      },
+      plugins: [
+        require('tailwindcss-primeui')
+      ]
+    }
+  },
+
+  css: [
+    'primeicons/primeicons.css',
+    '~/assets/css/main.css'
+  ],
+
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8080/api',
+      appMode: process.env.NUXT_PUBLIC_APP_MODE || 'local'
+    }
+  },
+
+  typescript: {
+    strict: true,
+    typeCheck: true
+  },
+
+  app: {
+    head: {
+      title: 'Time Tracker',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'Self-hostable time tracking application with intuitive drag-and-paint interface' }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ]
+    }
+  },
+
+  nitro: {
+    esbuild: {
+      options: {
+        target: 'es2020'
+      }
+    }
+  },
+
+  // Development server configuration
+  devServer: {
+    port: 3000
+  }
+})

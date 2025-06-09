@@ -1,0 +1,127 @@
+@import "tailwindcss/preflight";
+@tailwind utilities;
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+
+/* Custom CSS for Time Tracker */
+@layer base {
+    html {
+        font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+        background-color: #fafafa;
+        color: #1f2937;
+    }
+}
+
+@layer components {
+    /* PrimeVue Toast Customization */
+    .p-toast .p-toast-message .p-toast-detail {
+        color: rgba(0, 0, 0, 0.7) !important;
+    }
+
+    .p-toast .p-toast-message-success .p-toast-detail {
+        color: rgba(0, 100, 0, 0.8) !important;
+    }
+
+    .p-toast .p-toast-message-info .p-toast-detail {
+        color: rgba(0, 0, 139, 0.8) !important;
+    }
+
+    .p-toast .p-toast-message-warn .p-toast-detail {
+        color: rgba(139, 69, 0, 0.8) !important;
+    }
+
+    .p-toast .p-toast-message-error .p-toast-detail {
+        color: rgba(139, 0, 0, 0.8) !important;
+    }
+
+    /* Timesheet Grid Components */
+    .timesheet-grid {
+        display: grid;
+        gap: 1px;
+        background-color: #e5e7eb;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        grid-template-columns: 80px repeat(4, 1fr);
+    }
+
+    .timesheet-hour-label {
+        background-color: #f3f4f6;
+        border-right: 1px solid #d1d5db;
+        padding: 0.75rem 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .timesheet-slot {
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        height: 3rem;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out;
+        position: relative;
+    }
+
+    .timesheet-slot:hover {
+        background-color: #f9fafb;
+    }
+
+    .timesheet-slot.filled {
+        color: white;
+        font-weight: 500;
+        font-size: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .timesheet-slot.dragging {
+        box-shadow: 0 0 0 2px #3b82f6;
+    }
+
+    /* Custom scrollbar for timesheet */
+    .timesheet-container {
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 #f1f5f9;
+    }
+
+    .timesheet-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .timesheet-container::-webkit-scrollbar-track {
+        background-color: #f1f5f9;
+    }
+
+    .timesheet-container::-webkit-scrollbar-thumb {
+        background-color: #94a3b8;
+        border-radius: 9999px;
+    }
+
+    .timesheet-container::-webkit-scrollbar-thumb:hover {
+        background-color: #64748b;
+    }
+}
+
+@layer utilities {
+    /* Utility classes for time formatting */
+    .time-display {
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Prevent text selection during drag operations */
+    .no-select {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+}

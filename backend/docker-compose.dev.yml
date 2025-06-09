@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres
+    container_name: timetracker-db-dev
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=timetracker
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/01-init-user.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d timetracker"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  adminer:
+    image: adminer:latest
+    container_name: timetracker-adminer-dev
+    ports:
+      - "8081:8080"
+    depends_on:
+      - database
+    restart: unless-stopped
+    environment:
+      - ADMINER_DEFAULT_SERVER=database
+
+volumes:
+  postgres_dev_data:
