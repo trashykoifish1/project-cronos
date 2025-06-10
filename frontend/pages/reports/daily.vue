@@ -471,6 +471,8 @@ import Chart from 'chart.js/auto'
 // Composables
 const toast = useToast()
 const { formatDuration } = useTime()
+const route = useRoute()  // Add this
+const router = useRouter()  // Add this
 
 // Reactive state
 const selectedDate = ref(new Date())
@@ -620,24 +622,41 @@ const formatDateLong = (date: Date) => {
 
 const onDateChange = async (event: any) => {
   selectedDate.value = event
-  await fetchDailyReport()
+  const dateString = format(event, 'yyyy-MM-dd')
+
+  // Update URL to reflect the new date
+  updateURLWithDate(event)
+
+  await reportsStore.fetchDailyReport(dateString)
 }
 
 const previousDay = async () => {
   const newDate = subDays(selectedDate.value, 1)
   selectedDate.value = newDate
+
+  // Update URL
+  updateURLWithDate(newDate)
+
   await fetchDailyReport()
 }
 
 const nextDay = async () => {
   const newDate = addDays(selectedDate.value, 1)
   selectedDate.value = newDate
+
+  // Update URL
+  updateURLWithDate(newDate)
+
   await fetchDailyReport()
 }
 
 const goToToday = async () => {
   const today = new Date()
   selectedDate.value = today
+
+  // Update URL
+  updateURLWithDate(today)
+
   await fetchDailyReport()
 }
 
@@ -818,6 +837,65 @@ const getEntryWidth = (entry: any, hour: number) => {
   return Math.max(0, endPos - startPos)
 }
 
+// URL parameter handling
+const initializeDateFromURL = () => {
+  const urlDate = route.query.date as string
+
+  if (urlDate) {
+    try {
+      // Validate the date format (YYYY-MM-DD)
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+      if (dateRegex.test(urlDate)) {
+        const parsedDate = new Date(urlDate + 'T00:00:00')
+
+        // Check if it's a valid date
+        if (!isNaN(parsedDate.getTime())) {
+          selectedDate.value = parsedDate
+
+          toast.add({
+            severity: 'info',
+            summary: 'Date Loaded',
+            detail: `Showing report for ${format(parsedDate, 'MMMM do, yyyy')}`,
+            life: 3000
+          })
+          return
+        }
+      }
+
+      // If we get here, the date was invalid
+      toast.add({
+        severity: 'warn',
+        summary: 'Invalid Date',
+        detail: 'URL date parameter was invalid, showing today instead',
+        life: 3000
+      })
+    } catch (error) {
+      toast.add({
+        severity: 'warn',
+        summary: 'Date Error',
+        detail: 'Could not parse URL date, showing today instead',
+        life: 3000
+      })
+    }
+  }
+
+  // If no URL date or invalid date, use today (existing behavior)
+  if (!route.query.date) {
+    selectedDate.value = new Date()
+  }
+}
+
+const updateURLWithDate = (date: Date) => {
+  const dateString = format(date, 'yyyy-MM-dd')
+
+  // Only update URL if the date parameter is different
+  if (route.query.date !== dateString) {
+    router.replace({
+      query: { ...route.query, date: dateString }
+    })
+  }
+}
+
 watch(() => reportData.value, async (newData) => {
   if (newData) {
     // Wait for DOM to update
@@ -830,8 +908,27 @@ watch(() => reportData.value, async (newData) => {
   }
 }, { immediate: true })
 
+watch(() => route.query.date, (newDate) => {
+  if (newDate && typeof newDate === 'string') {
+    try {
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+      if (dateRegex.test(newDate)) {
+        const parsedDate = new Date(newDate + 'T00:00:00')
+        if (!isNaN(parsedDate.getTime()) &&
+            format(parsedDate, 'yyyy-MM-dd') !== format(selectedDate.value, 'yyyy-MM-dd')) {
+          selectedDate.value = parsedDate
+          fetchDailyReport()
+        }
+      }
+    } catch (error) {
+      console.warn('Invalid date in URL:', newDate)
+    }
+  }
+})
+
 // Initialize
 onMounted(async () => {
+  initializeDateFromURL()
   await fetchDailyReport()
   await nextTick(() => {
     createTaskPieChart()
