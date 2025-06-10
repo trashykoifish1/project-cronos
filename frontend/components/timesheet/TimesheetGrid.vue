@@ -3,24 +3,24 @@
     <!-- Grid Header -->
     <div class="grid-header mb-4">
       <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-4">
-          <h3 class="text-lg font-semibold text-gray-900">
+        <div class="flex items-center space-x-2 lg:space-x-4">
+          <h3 class="text-base lg:text-lg font-semibold text-gray-900">
             Daily Timesheet
           </h3>
-          <div class="text-sm text-gray-600">
+          <div class="text-xs lg:text-sm text-gray-600">
             {{ formatDate(timesheetStore.currentDate) }}
           </div>
         </div>
 
-        <div class="flex items-center space-x-3">
-          <!-- Time Range Info -->
-          <div class="text-sm text-gray-600">
+        <div class="flex items-center space-x-2 lg:space-x-3">
+          <!-- Time Range Info - Hidden on mobile -->
+          <div class="hidden lg:block text-sm text-gray-600">
             {{ formatTime(timesheetStore.startHour) }} - {{ formatTime(timesheetStore.endHour) }}
           </div>
 
           <!-- Total Time -->
-          <div class="px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
-            <span class="text-sm font-medium text-blue-800">
+          <div class="px-2 lg:px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
+            <span class="text-xs lg:text-sm font-medium text-blue-800">
               Total: {{ formatDuration(timesheetStore.totalTrackedMinutes) }}
             </span>
           </div>
@@ -44,7 +44,7 @@
         <template #icon>
           <i class="pi pi-exclamation-triangle"></i>
         </template>
-        Please select a task from the sidebar to start tracking time
+        <span class="text-sm">Please select a task from the sidebar to start tracking time</span>
       </Message>
     </div>
 
@@ -73,40 +73,114 @@
       />
     </div>
 
-    <!-- Timesheet Grid -->
-    <div v-else class="timesheet-container overflow-auto rounded-lg border border-gray-300">
-      <div class="timesheet-grid" :style="gridStyle">
-        <!-- Header Row -->
-        <div class="timesheet-hour-label text-xs font-semibold">Time</div>
-        <div class="bg-gray-100 px-2 py-2 text-xs font-medium text-center border-r border-gray-300">:00</div>
-        <div class="bg-gray-100 px-2 py-2 text-xs font-medium text-center border-r border-gray-300">:15</div>
-        <div class="bg-gray-100 px-2 py-2 text-xs font-medium text-center border-r border-gray-300">:30</div>
-        <div class="bg-gray-100 px-2 py-2 text-xs font-medium text-center">:45</div>
+    <!-- Timesheet Content (when not loading/error) -->
+    <div v-else>
+      <!-- Mobile Layout (< lg) -->
+      <div class="lg:hidden space-y-3">
+        <!-- Current Time Indicator -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+          <div class="flex items-center justify-between">
+            <div class="text-sm font-medium text-blue-800">
+              {{ getCurrentTimeSlot() }}
+            </div>
+            <div class="text-xs text-blue-600">
+              Current time
+            </div>
+          </div>
+        </div>
 
-        <!-- Time Slots -->
-        <template v-for="hour in timesheetStore.hoursRange" :key="hour">
-          <!-- Hour Label -->
-          <div class="timesheet-hour-label">
-            {{ formatTime(hour) }}
+        <!-- Mobile Hour Cards -->
+        <div
+            v-for="hour in timesheetStore.hoursRange"
+            :key="hour"
+            class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm"
+        >
+          <!-- Hour Header -->
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-lg font-semibold text-gray-900">
+              {{ formatTime(hour) }}
+            </div>
+            <div class="text-xs text-gray-500">
+              {{ getHourSummary(hour) }}
+            </div>
           </div>
 
-          <!-- 15-minute slots for this hour -->
-          <TimeSlot
-              v-for="minute in [0, 15, 30, 45]"
-              :key="`${hour}-${minute}`"
-              :slot="getSlot(hour, minute)"
-              @drag-start="handleDragStart"
-              @drag-update="handleDragUpdate"
-              @drag-end="handleDragEnd"
-              @slot-click="handleSlotClick"
-              @slot-right-click="handleSlotRightClick"
-          />
-        </template>
+          <!-- 15-minute Slots Grid -->
+          <div class="grid grid-cols-4 gap-2">
+            <TimeSlot
+                v-for="minute in [0, 15, 30, 45]"
+                :key="`${hour}-${minute}`"
+                :slot="getSlot(hour, minute)"
+                :mobile="true"
+                @drag-start="handleDragStart"
+                @drag-update="handleDragUpdate"
+                @drag-end="handleDragEnd"
+                @slot-click="handleSlotClick"
+                @slot-right-click="handleSlotRightClick"
+                class="aspect-square min-h-12"
+            />
+          </div>
+
+          <!-- Time Labels for Mobile -->
+          <div class="grid grid-cols-4 gap-2 mt-1">
+            <div v-for="minute in [0, 15, 30, 45]" :key="minute" class="text-center">
+              <span class="text-xs text-gray-500">:{{ minute.toString().padStart(2, '0') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Layout (>= lg) -->
+      <div class="hidden lg:block timesheet-container overflow-auto rounded-lg border border-gray-300">
+        <div class="timesheet-grid" :style="gridStyle">
+          <!-- Header Row -->
+          <div class="timesheet-hour-label text-xs font-semibold">Time</div>
+          <div class="bg-gray-100 px-2 py-2 text-xs font-medium text-center border-r border-gray-300">:00</div>
+          <div class="bg-gray-100 px-2 py-2 text-xs font-medium text-center border-r border-gray-300">:15</div>
+          <div class="bg-gray-100 px-2 py-2 text-xs font-medium text-center border-r border-gray-300">:30</div>
+          <div class="bg-gray-100 px-2 py-2 text-xs font-medium text-center">:45</div>
+
+          <!-- Time Slots -->
+          <template v-for="hour in timesheetStore.hoursRange" :key="hour">
+            <!-- Hour Label -->
+            <div class="timesheet-hour-label">
+              {{ formatTime(hour) }}
+            </div>
+
+            <!-- 15-minute slots for this hour -->
+            <TimeSlot
+                v-for="minute in [0, 15, 30, 45]"
+                :key="`${hour}-${minute}`"
+                :slot="getSlot(hour, minute)"
+                :mobile="false"
+                @drag-start="handleDragStart"
+                @drag-update="handleDragUpdate"
+                @drag-end="handleDragEnd"
+                @slot-click="handleSlotClick"
+                @slot-right-click="handleSlotRightClick"
+            />
+          </template>
+        </div>
       </div>
     </div>
 
-    <!-- Instructions -->
-    <div class="mt-4 text-sm text-gray-600">
+    <!-- Mobile Instructions -->
+    <div class="lg:hidden mt-4 text-sm text-gray-600">
+      <div class="flex items-start space-x-2">
+        <i class="pi pi-info-circle text-blue-500 mt-0.5 flex-shrink-0"></i>
+        <div>
+          <strong>Instructions:</strong>
+          <ul class="mt-1 space-y-1">
+            <li>• Select a task first, then tap time slots</li>
+            <li>• Tap and hold to drag across multiple slots</li>
+            <li>• Long press existing entries to delete</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop Instructions -->
+    <div class="hidden lg:block mt-4 text-sm text-gray-600">
       <div class="flex items-start space-x-2">
         <i class="pi pi-info-circle text-blue-500 mt-0.5"></i>
         <div>
@@ -124,7 +198,7 @@
     <!-- Debug Info (Development) -->
     <div v-if="showDebugInfo" class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
       <h4 class="font-semibold text-gray-800 mb-2">Debug Information</h4>
-      <div class="grid grid-cols-2 gap-4 text-sm">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
         <div>
           <strong>Drag State:</strong>
           <div>Is Dragging: {{ timesheetStore.isDragging }}</div>
@@ -209,6 +283,25 @@ const getSlot = (hour: number, minute: number): TimeSlot => {
     timeEntry: null,
     isSelected: false
   }
+}
+
+// Mobile-specific helper methods
+const getCurrentTimeSlot = () => {
+  const now = new Date()
+  const hour = now.getHours()
+  const minute = Math.floor(now.getMinutes() / 15) * 15
+  return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+}
+
+const getHourSummary = (hour: number) => {
+  const hourSlots = [0, 15, 30, 45].map(minute => getSlot(hour, minute))
+  const filledSlots = hourSlots.filter(slot => slot.timeEntry)
+
+  if (filledSlots.length === 0) return 'Empty'
+  if (filledSlots.length === 4) return 'Full hour'
+
+  const totalMinutes = filledSlots.length * 15
+  return `${totalMinutes}min tracked`
 }
 
 const refreshTimesheet = async () => {

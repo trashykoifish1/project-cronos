@@ -1,15 +1,129 @@
 <template>
-    <!-- Main Content Area -->
-    <div class="flex flex-1 overflow-hidden">
-      <!-- Task Sidebar -->
-      <div class="w-80 flex-shrink-0 bg-white border-r border-gray-200">
-        <TaskSidebar />
-      </div>
+  <!-- Main Content Area -->
+  <div class="flex flex-1 overflow-hidden relative">
+    <!-- Mobile Task Sidebar Overlay -->
+    <div
+        v-if="showMobileSidebar"
+        class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+        @click="showMobileSidebar = false"
+    >
+      <div
+          class="bg-white w-80 h-full shadow-xl transform transition-transform duration-300"
+          @click.stop
+      >
+        <!-- Mobile Sidebar Header -->
+        <div class="flex items-center justify-between p-4 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900">Select Task</h3>
+          <Button
+              icon="pi pi-times"
+              severity="secondary"
+              text
+              @click="showMobileSidebar = false"
+          />
+        </div>
 
-      <!-- Timesheet Area -->
-      <div class="flex-1 flex flex-col">
-        <!-- Current Day Header -->
-        <div class="bg-white border-b border-gray-200 p-6">
+        <!-- Mobile Sidebar Content -->
+        <div class="h-full pb-16">
+          <TaskSidebar @task-selected="showMobileSidebar = false" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop Task Sidebar -->
+    <div class="hidden lg:block w-80 flex-shrink-0 bg-white border-r border-gray-200">
+      <TaskSidebar />
+    </div>
+
+    <!-- Timesheet Area -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- Current Day Header -->
+      <div class="bg-white border-b border-gray-200 p-4 lg:p-6">
+        <!-- Mobile Header -->
+        <div class="lg:hidden">
+          <!-- Mobile Top Row: Task Button + Date -->
+          <div class="flex items-center justify-between mb-3">
+            <Button
+                @click="showMobileSidebar = true"
+                icon="pi pi-bookmark"
+                label="Tasks"
+                severity="info"
+                class="flex-shrink-0"
+            />
+
+            <div class="flex items-center space-x-1 flex-1 justify-center">
+              <Button
+                  icon="pi pi-chevron-left"
+                  severity="secondary"
+                  text
+                  @click="previousDay"
+                  class="w-10 h-10"
+              />
+
+              <DatePicker
+                  v-model="selectedDate"
+                  @date-select="onDateChange"
+                  showIcon
+                  dateFormat="M dd, yy"
+                  placeholder="Select Date"
+                  class="w-32 text-center"
+                  inputClass="text-sm text-center"
+              />
+
+              <Button
+                  icon="pi pi-chevron-right"
+                  severity="secondary"
+                  text
+                  @click="nextDay"
+                  class="w-10 h-10"
+              />
+            </div>
+
+            <Button
+                @click="showMobileActions = !showMobileActions"
+                icon="pi pi-ellipsis-v"
+                severity="secondary"
+                text
+                class="w-10 h-10"
+            />
+          </div>
+
+          <!-- Mobile Actions Panel -->
+          <div v-if="showMobileActions" class="bg-gray-50 rounded-lg p-3 mb-3">
+            <div class="grid grid-cols-3 gap-2">
+              <Button
+                  @click="showQuickAdd = true; showMobileActions = false"
+                  label="Add"
+                  icon="pi pi-plus"
+                  size="small"
+                  severity="info"
+                  class="text-xs"
+              />
+              <Button
+                  @click="exportToday; showMobileActions = false"
+                  label="Export"
+                  icon="pi pi-download"
+                  size="small"
+                  severity="secondary"
+                  class="text-xs"
+              />
+              <Button
+                  @click="refreshTimesheet; showMobileActions = false"
+                  icon="pi pi-refresh"
+                  size="small"
+                  severity="secondary"
+                  :loading="timesheetStore.loading"
+                  class="text-xs"
+              />
+            </div>
+          </div>
+
+          <p class="text-gray-600 text-sm text-center">
+            Tap Tasks to select, then paint time slots
+          </p>
+        </div>
+
+        <!-- Desktop Header -->
+        <div class="hidden lg:block">
           <div class="flex items-center justify-between">
             <div>
               <div class="pt-2 space-x-2">
@@ -49,8 +163,7 @@
               </p>
             </div>
 
-
-            <!-- Quick Actions -->
+            <!-- Desktop Quick Actions -->
             <div class="flex items-center space-x-3">
               <Button
                   @click="showQuickAdd = true"
@@ -76,78 +189,78 @@
               />
             </div>
           </div>
+        </div>
 
           <!-- Daily Statistics -->
-          <div class="mt-6 grid grid-cols-4 gap-4">
-            <div class="bg-blue-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-blue-600">
-                {{ formatDuration(timesheetStore.totalTrackedMinutes) }}
-              </div>
-              <div class="text-sm text-blue-800">Total Tracked</div>
+        <div class="mt-4 lg:mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+          <div class="bg-blue-50 rounded-lg p-3 lg:p-4 text-center">
+            <div class="text-lg lg:text-2xl font-bold text-blue-600">
+              {{ formatDuration(timesheetStore.totalTrackedMinutes) }}
             </div>
+            <div class="text-xs lg:text-sm text-blue-800">Total Tracked</div>
+          </div>
 
-            <div class="bg-green-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-green-600">
-                {{ timesheetStore.timeEntries.length }}
-              </div>
-              <div class="text-sm text-green-800">Time Entries</div>
+          <div class="bg-green-50 rounded-lg p-3 lg:p-4 text-center">
+            <div class="text-lg lg:text-2xl font-bold text-green-600">
+              {{ timesheetStore.timeEntries.length }}
             </div>
+            <div class="text-xs lg:text-sm text-green-800">Time Entries</div>
+          </div>
 
-            <div class="bg-purple-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-purple-600">
-                {{ uniqueTasksCount }}
-              </div>
-              <div class="text-sm text-purple-800">Tasks Used</div>
+          <div class="bg-purple-50 rounded-lg p-3 lg:p-4 text-center">
+            <div class="text-lg lg:text-2xl font-bold text-purple-600">
+              {{ uniqueTasksCount }}
             </div>
+            <div class="text-xs lg:text-sm text-purple-800">Tasks Used</div>
+          </div>
 
-            <div class="bg-orange-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-orange-600">
-                {{ completionPercentage }}%
-              </div>
-              <div class="text-sm text-orange-800">Day Progress</div>
+          <div class="bg-orange-50 rounded-lg p-3 lg:p-4 text-center">
+            <div class="text-lg lg:text-2xl font-bold text-orange-600">
+              {{ completionPercentage }}%
             </div>
+            <div class="text-xs lg:text-sm text-orange-800">Day Progress</div>
           </div>
         </div>
 
         <!-- Timesheet Grid -->
-        <div class="flex-1 overflow-auto p-6">
-          <div class="bg-white rounded-lg border border-gray-200 p-4">
+        <div class="flex-1 overflow-auto p-2 lg:p-6">
+          <div class="bg-white rounded-lg border border-gray-200 p-2 lg:p-4">
             <TimesheetGrid />
           </div>
         </div>
 
         <!-- Time Breakdown Footer -->
-        <div class="bg-white border-t border-gray-200 p-4">
-          <div class="flex items-center justify-between">
+        <div class="bg-white border-t border-gray-200 p-2 lg:p-4">
+          <div class="block lg:flex lg:items-center lg:justify-between">
             <!-- Time Breakdown by Task -->
-            <div class="flex items-center space-x-4">
-              <span class="text-sm font-medium text-gray-700">Today's Breakdown:</span>
-              <div class="flex items-center space-x-4 flex-wrap">
+            <div class="mb-3 lg:mb-0">
+              <span class="text-sm font-medium text-gray-700 block lg:inline">Today's Breakdown:</span>
+              <div class="flex items-center space-x-2 lg:space-x-4 flex-wrap mt-2 lg:mt-0 lg:ml-4">
                 <div
                     v-for="(breakdown, taskId) in timeBreakdown"
                     :key="taskId"
-                    class="flex items-center space-x-2 px-3 py-1 bg-gray-50 rounded-full"
+                    class="flex items-center space-x-1 lg:space-x-2 px-2 lg:px-3 py-1 bg-gray-50 rounded-full"
                 >
                   <div
-                      class="w-3 h-3 rounded-full"
+                      class="w-2 h-2 lg:w-3 lg:h-3 rounded-full"
                       :style="{ backgroundColor: breakdown.color }"
                   ></div>
-                  <span class="text-sm font-medium text-gray-700">
-                    {{ breakdown.taskTitle }}
-                  </span>
-                  <span class="text-sm text-gray-600">
-                    {{ formatDuration(breakdown.minutes) }}
-                  </span>
+                  <span class="text-xs lg:text-sm font-medium text-gray-700 truncate max-w-20 lg:max-w-none">
+            {{ breakdown.taskTitle }}
+          </span>
+                  <span class="text-xs lg:text-sm text-gray-600">
+            {{ formatDuration(breakdown.minutes) }}
+          </span>
                 </div>
 
-                <div v-if="Object.keys(timeBreakdown).length === 0" class="text-sm text-gray-500">
+                <div v-if="Object.keys(timeBreakdown).length === 0" class="text-xs lg:text-sm text-gray-500">
                   No time entries yet - start by selecting a task and painting time slots!
                 </div>
               </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center justify-center lg:justify-end">
               <Button
                   @click="clearDay"
                   label="Clear Day"
@@ -155,6 +268,7 @@
                   size="small"
                   severity="danger"
                   :disabled="timesheetStore.timeEntries.length === 0"
+                  class="text-xs lg:text-sm"
               />
             </div>
           </div>
@@ -187,7 +301,7 @@
         <Button label="Add Entry" @click="showQuickAdd = false" disabled />
       </template>
     </Dialog>
-
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -205,6 +319,8 @@ const { formatDuration, getCurrentDate } = useTime()
 // Reactive state
 const selectedDate = ref(new Date())
 const showQuickAdd = ref(false)
+const showMobileSidebar = ref(false)
+const showMobileActions = ref(false)
 
 // Computed properties
 const timeBreakdown = computed(() => timesheetStore.timeBreakdownByTask)
