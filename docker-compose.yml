@@ -58,7 +58,7 @@ services:
       LOGGING_LEVEL_ROOT: ${LOG_LEVEL:-INFO}
 
       # CORS Configuration (for development)
-      CORS_ALLOWED_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://frontend:3000}
+      SPRING_WEB_CORS_ALLOWED_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://frontend:3000}
     ports:
       - "8080:8080"
     networks:
