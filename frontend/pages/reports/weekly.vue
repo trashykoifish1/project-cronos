@@ -4,8 +4,8 @@
     <div class="mb-6">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">Weekly Summary</h1>
-          <p class="text-gray-600 mt-1">
+          <h1 class="text-2xl font-bold text-app-primary">Weekly Summary</h1>
+          <p class="text-app-secondary mt-1">
             View your weekly time tracking overview and daily breakdown
           </p>
         </div>
@@ -57,10 +57,10 @@
 
       <!-- Week Range Display -->
       <div v-if="weekRange" class="mt-2">
-        <div class="text-lg font-medium text-gray-700">
+        <div class="text-lg font-medium text-app-primary">
           {{ weekRange.start }} - {{ weekRange.end }}
         </div>
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-app-secondary">
           Week {{ weekRange.weekNumber }} of {{ weekRange.year }}
         </div>
       </div>
@@ -69,14 +69,14 @@
     <!-- Loading State -->
     <div v-if="loading" class="flex items-center justify-center py-12">
       <ProgressSpinner />
-      <span class="ml-3 text-gray-600">Loading weekly summary...</span>
+      <span class="ml-3 text-app-secondary">Loading weekly summary...</span>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-      <i class="pi pi-exclamation-triangle text-red-600 text-2xl mb-2"></i>
-      <h3 class="text-lg font-semibold text-red-800 mb-2">Failed to Load Weekly Summary</h3>
-      <p class="text-red-600 mb-4">{{ error }}</p>
+    <div v-else-if="error" class="bg-app-red-50 border border-app-red-200 rounded-lg p-6 text-center">
+      <i class="pi pi-exclamation-triangle text-app-red-600 text-2xl mb-2"></i>
+      <h3 class="text-lg font-semibold text-app-red-800 mb-2">Failed to Load Weekly Summary</h3>
+      <p class="text-app-red-600 mb-4">{{ error }}</p>
       <Button
           label="Retry"
           icon="pi pi-refresh"
@@ -92,37 +92,37 @@
       <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Card class="text-center">
           <template #content>
-            <div class="text-2xl font-bold text-blue-600 mb-2">
+            <div class="text-2xl font-bold text-app-blue-600 mb-2">
               {{ weeklyData.totalTimeFormatted || '0h 0m' }}
             </div>
-            <div class="text-sm text-gray-600">Total Time</div>
+            <div class="text-sm text-app-secondary">Total Time</div>
           </template>
         </Card>
 
         <Card class="text-center">
           <template #content>
-            <div class="text-2xl font-bold text-green-600 mb-2">
+            <div class="text-2xl font-bold text-app-green-600 mb-2">
               {{ weeklyData.averageDailyHours || '0.0' }}h
             </div>
-            <div class="text-sm text-gray-600">Daily Average</div>
+            <div class="text-sm text-app-secondary">Daily Average</div>
           </template>
         </Card>
 
         <Card class="text-center">
           <template #content>
-            <div class="text-2xl font-bold text-purple-600 mb-2">
+            <div class="text-2xl font-bold text-app-purple-600 mb-2">
               {{ activeDaysCount }}
             </div>
-            <div class="text-sm text-gray-600">Active Days</div>
+            <div class="text-sm text-app-secondary">Active Days</div>
           </template>
         </Card>
 
         <Card class="text-center">
           <template #content>
-            <div class="text-2xl font-bold text-orange-600 mb-2">
+            <div class="text-2xl font-bold text-app-orange-600 mb-2">
               {{ totalEntriesCount }}
             </div>
-            <div class="text-sm text-gray-600">Time Entries</div>
+            <div class="text-sm text-app-secondary">Time Entries</div>
           </template>
         </Card>
 
@@ -131,7 +131,7 @@
             <div class="text-2xl font-bold text-indigo-600 mb-2">
               {{ weeklyProductivity }}%
             </div>
-            <div class="text-sm text-gray-600">Weekly Goal</div>
+            <div class="text-sm text-app-secondary">Weekly Goal</div>
           </template>
         </Card>
       </div>
@@ -141,7 +141,7 @@
         <template #title>
           <div class="flex items-center justify-between">
             <div class="flex items-center">
-              <i class="pi pi-calendar text-blue-600 mr-2"></i>
+              <i class="pi pi-calendar text-app-blue-600 mr-2"></i>
               Daily Breakdown
             </div>
             <Button
@@ -158,34 +158,34 @@
             <div class="overflow-x-auto">
               <table class="w-full">
                 <thead>
-                <tr class="border-b border-gray-200">
-                  <th class="text-left py-3 px-4 font-medium text-gray-700">Day</th>
-                  <th class="text-left py-3 px-4 font-medium text-gray-700">Date</th>
-                  <th class="text-left py-3 px-4 font-medium text-gray-700">Total Time</th>
-                  <th class="text-left py-3 px-4 font-medium text-gray-700">Entries</th>
-                  <th class="text-left py-3 px-4 font-medium text-gray-700">Top Task</th>
-                  <th class="text-left py-3 px-4 font-medium text-gray-700">Progress</th>
-                  <th class="text-center py-3 px-4 font-medium text-gray-700">Actions</th>
+                <tr class="border-b border-app-primary">
+                  <th class="text-left py-3 px-4 font-medium text-app-primary">Day</th>
+                  <th class="text-left py-3 px-4 font-medium text-app-primary">Date</th>
+                  <th class="text-left py-3 px-4 font-medium text-app-primary">Total Time</th>
+                  <th class="text-left py-3 px-4 font-medium text-app-primary">Entries</th>
+                  <th class="text-left py-3 px-4 font-medium text-app-primary">Top Task</th>
+                  <th class="text-left py-3 px-4 font-medium text-app-primary">Progress</th>
+                  <th class="text-center py-3 px-4 font-medium text-app-primary">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr
                     v-for="day in weeklyData.dailySummaries"
                     :key="day.date"
-                    class="border-b border-gray-100 hover:bg-gray-50"
+                    class="border-b border-app-gray-primary hover:bg-app-tertiary"
                 >
                   <td class="py-3 px-4">
-                    <div class="font-medium text-gray-900">
+                    <div class="font-medium text-app-primary">
                       {{ formatDayName(day.date) }}
                     </div>
                   </td>
                   <td class="py-3 px-4">
-                    <div class="text-sm text-gray-600">
+                    <div class="text-sm text-app-secondary">
                       {{ formatDate(day.date) }}
                     </div>
                   </td>
                   <td class="py-3 px-4">
-                    <div class="font-medium text-gray-900">
+                    <div class="font-medium text-app-primary">
                       {{ day.totalTimeFormatted || '0h 0m' }}
                     </div>
                   </td>
@@ -201,19 +201,19 @@
                           class="w-3 h-3 rounded-full"
                           :style="{ backgroundColor: getTopTask(day).taskColor }"
                       ></div>
-                      <span class="text-sm text-gray-700">{{ getTopTask(day).taskTitle }}</span>
+                      <span class="text-sm text-app-primary">{{ getTopTask(day).taskTitle }}</span>
                     </div>
-                    <span v-else class="text-sm text-gray-400">No tasks</span>
+                    <span v-else class="text-sm text-app-secondary">No tasks</span>
                   </td>
                   <td class="py-3 px-4">
                     <div class="flex items-center space-x-2">
-                      <div class="w-16 bg-gray-200 rounded-full h-2">
+                      <div class="w-16 bg-app-tertiary rounded-full h-2">
                         <div
-                            class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                            class="bg-app-blue-600 h-2 rounded-full transition-all duration-300"
                             :style="{ width: getDayProgress(day) + '%' }"
                         ></div>
                       </div>
-                      <span class="text-xs text-gray-600">{{ getDayProgress(day) }}%</span>
+                      <span class="text-xs text-app-secondary">{{ getDayProgress(day) }}%</span>
                     </div>
                   </td>
                   <td class="py-3 px-4 text-center">
@@ -231,7 +231,7 @@
               </table>
             </div>
           </div>
-          <div v-else class="text-center py-8 text-gray-500">
+          <div v-else class="text-center py-8 text-app-secondary">
             <i class="pi pi-calendar text-3xl mb-2"></i>
             <div>No daily data found for this week</div>
           </div>
@@ -244,7 +244,7 @@
         <Card>
           <template #title>
             <div class="flex items-center">
-              <i class="pi pi-bookmark text-purple-600 mr-2"></i>
+              <i class="pi pi-bookmark text-app-purple-600 mr-2"></i>
               Tasks This Week
             </div>
           </template>
@@ -253,7 +253,7 @@
               <div
                   v-for="task in weeklyTaskSummary"
                   :key="task.taskId"
-                  class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  class="flex items-center justify-between p-3 bg-app-primary rounded-lg"
               >
                 <div class="flex items-center space-x-3">
                   <div
@@ -261,17 +261,17 @@
                       :style="{ backgroundColor: task.taskColor }"
                   ></div>
                   <div>
-                    <div class="font-medium text-gray-900">{{ task.taskTitle }}</div>
-                    <div class="text-sm text-gray-600">{{ task.categoryTitle }}</div>
+                    <div class="font-medium text-app-primary">{{ task.taskTitle }}</div>
+                    <div class="text-sm text-app-secondary">{{ task.categoryTitle }}</div>
                   </div>
                 </div>
                 <div class="text-right">
-                  <div class="font-semibold text-purple-600">{{ task.timeFormatted }}</div>
-                  <div class="text-xs text-gray-600">{{ task.percentage }}% of week</div>
+                  <div class="font-semibold text-app-purple-600">{{ task.timeFormatted }}</div>
+                  <div class="text-xs text-app-secondary">{{ task.percentage }}% of week</div>
                 </div>
               </div>
             </div>
-            <div v-else class="text-center py-8 text-gray-500">
+            <div v-else class="text-center py-8 text-app-secondary">
               <i class="pi pi-bookmark text-3xl mb-2"></i>
               <div>No tasks tracked this week</div>
             </div>
@@ -282,7 +282,7 @@
         <Card>
           <template #title>
             <div class="flex items-center">
-              <i class="pi pi-folder text-blue-600 mr-2"></i>
+              <i class="pi pi-folder text-app-blue-600 mr-2"></i>
               Categories This Week
             </div>
           </template>
@@ -291,10 +291,10 @@
               <div
                   v-for="category in weeklyCategorySummary"
                   :key="category.categoryId"
-                  class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  class="flex items-center justify-between p-3 bg-app-primary rounded-lg"
               >
                 <div class="flex items-center space-x-3">
-                  <div class="text-lg font-medium text-gray-900">
+                  <div class="text-lg font-medium text-app-primary">
                     {{ category.categoryTitle }}
                   </div>
                   <Badge
@@ -303,12 +303,12 @@
                   />
                 </div>
                 <div class="text-right">
-                  <div class="font-semibold text-blue-600">{{ category.timeFormatted }}</div>
-                  <div class="text-xs text-gray-600">{{ category.percentage }}% of week</div>
+                  <div class="font-semibold text-app-blue-600">{{ category.timeFormatted }}</div>
+                  <div class="text-xs text-app-secondary">{{ category.percentage }}% of week</div>
                 </div>
               </div>
             </div>
-            <div v-else class="text-center py-8 text-gray-500">
+            <div v-else class="text-center py-8 text-app-secondary">
               <i class="pi pi-folder text-3xl mb-2"></i>
               <div>No categories tracked this week</div>
             </div>
@@ -319,9 +319,9 @@
 
     <!-- No Data State -->
     <div v-else class="text-center py-12">
-      <i class="pi pi-calendar text-4xl text-gray-400 mb-4"></i>
-      <h3 class="text-lg font-semibold text-gray-700 mb-2">No Data Available</h3>
-      <p class="text-gray-600 mb-4">
+      <i class="pi pi-calendar text-4xl text-app-secondary mb-4"></i>
+      <h3 class="text-lg font-semibold text-app-primary mb-2">No Data Available</h3>
+      <p class="text-app-secondary mb-4">
         No time tracking data found for this week
       </p>
       <Button

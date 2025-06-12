@@ -1,17 +1,137 @@
-@import "tailwindcss/preflight";
-@tailwind utilities;
 @import "tailwindcss";
 @import "tailwindcss-primeui";
+@custom-variant dark (&:where(.dark, .dark *));
 
-/* Custom CSS for Time Tracker */
+/* CSS Custom Properties for Theme Variables */
 @layer base {
+    :root {
+        /* Light theme - Base colors */
+        --bg-primary: 250 250 250;      /* #fafafa */
+        --bg-secondary: 255 255 255;    /* #ffffff */
+        --bg-tertiary: 243 244 246;     /* #f3f4f6 */
+        --text-primary: 31 41 55;       /* #1f2937 */
+        --text-secondary: 107 114 128;  /* #6b7280 */
+        --border-primary: 229 231 235;  /* #e5e7eb */
+        --border-secondary: 209 213 219; /* #d1d5db */
+
+        /* Light theme - Semantic colors */
+        /* Blue */
+        --blue-50: 239 246 255;         /* #eff6ff */
+        --blue-100: 219 234 254;        /* #dbeafe */
+        --blue-200: 191 219 254;        /* #bfdbfe */
+        --blue-500: 59 130 246;         /* #3b82f6 */
+        --blue-600: 37 99 235;          /* #2563eb */
+        --blue-700: 29 78 216;          /* #1d4ed8 */
+        --blue-800: 30 64 175;          /* #1e40af */
+        --blue-900: 30 58 138;          /* #1e3a8a */
+
+        /* Green */
+        --green-50: 240 253 244;        /* #f0fdf4 */
+        --green-200: 187 247 208;       /* #bbf7d0 */
+        --green-600: 22 163 74;         /* #16a34a */
+        --green-800: 22 101 52;         /* #166534 */
+
+        /* Purple */
+        --purple-50: 250 245 255;       /* #faf5ff */
+        --purple-600: 147 51 234;       /* #9333ea */
+        --purple-800: 107 33 168;       /* #6b21a8 */
+
+        /* Orange */
+        --orange-50: 255 247 237;       /* #fff7ed */
+        --orange-200: 254 215 170;      /* #fed7aa */
+        --orange-600: 234 88 12;        /* #ea580c */
+        --orange-800: 154 52 18;        /* #9a3412 */
+
+        /* Yellow */
+        --yellow-50: 254 252 232;       /* #fefce8 */
+        --yellow-200: 254 240 138;      /* #fef08a */
+        --yellow-600: 202 138 4;        /* #ca8a04 */
+
+        /* Red */
+        --red-50: 254 242 242;          /* #fef2f2 */
+        --red-200: 254 202 202;         /* #fecaca */
+        --red-500: 239 68 68;           /* #ef4444 */
+        --red-600: 220 38 38;           /* #dc2626 */
+        --red-800: 153 27 27;           /* #991b1b */
+
+        /* Timesheet specific colors */
+        --timesheet-bg: 229 231 235;    /* #e5e7eb */
+        --timesheet-border: 209 213 219; /* #d1d5db */
+        --timesheet-slot-bg: 255 255 255; /* #ffffff */
+        --timesheet-slot-hover: 249 250 251; /* #f9fafb */
+        --timesheet-hour-label-bg: 243 244 246; /* #f3f4f6 */
+        --timesheet-hour-label-text: 55 65 81; /* #374151 */
+    }
+
+    .dark {
+        /* Dark theme - Base colors */
+        --bg-primary: 17 24 39;         /* #111827 */
+        --bg-secondary: 31 41 55;       /* #1f2937 */
+        --bg-tertiary: 55 65 81;        /* #374151 */
+        --text-primary: 243 244 246;    /* #f3f4f6 */
+        --text-secondary: 156 163 175;  /* #9ca3af */
+        --border-primary: 75 85 99;     /* #4b5563 */
+        --border-secondary: 55 65 81;   /* #374151 */
+
+        /* Dark theme - Semantic colors */
+        /* Blue */
+        --blue-50: 30 58 138;           /* #1e3a8a (darker in dark mode) */
+        --blue-100: 37 99 235;          /* #2563eb */
+        --blue-200: 59 130 246;         /* #3b82f6 */
+        --blue-500: 96 165 250;         /* #60a5fa */
+        --blue-600: 147 197 253;        /* #93c5fd */
+        --blue-700: 191 219 254;        /* #bfdbfe */
+        --blue-800: 219 234 254;        /* #dbeafe */
+        --blue-900: 239 246 255;        /* #eff6ff */
+
+        /* Green */
+        --green-50: 20 83 45;           /* #14532d */
+        --green-200: 34 197 94;         /* #22c55e */
+        --green-600: 74 222 128;        /* #4ade80 */
+        --green-800: 187 247 208;       /* #bbf7d0 */
+
+        /* Purple */
+        --purple-50: 88 28 135;         /* #581c87 */
+        --purple-600: 168 85 247;       /* #a855f7 */
+        --purple-800: 196 181 253;      /* #c4b5fd */
+
+        /* Orange */
+        --orange-50: 124 45 18;         /* #7c2d12 */
+        --orange-200: 251 146 60;       /* #fb923c */
+        --orange-600: 251 191 36;       /* #fbbf24 */
+        --orange-800: 254 215 170;      /* #fed7aa */
+
+        /* Yellow */
+        --yellow-50: 133 77 14;         /* #854d0e */
+        --yellow-200: 250 204 21;       /* #facc15 */
+        --yellow-600: 253 224 71;       /* #fde047 */
+
+        /* Red */
+        --red-50: 127 29 29;            /* #7f1d1d */
+        --red-200: 248 113 113;         /* #f87171 */
+        --red-500: 248 113 113;         /* #f87171 */
+        --red-600: 252 165 165;         /* #fca5a5 */
+        --red-800: 254 202 202;         /* #fecaca */
+
+        /* Timesheet dark colors */
+        --timesheet-bg: 75 85 99;       /* #4b5563 */
+        --timesheet-border: 55 65 81;   /* #374151 */
+        --timesheet-slot-bg: 31 41 55;  /* #1f2937 */
+        --timesheet-slot-hover: 55 65 81; /* #374151 */
+        --timesheet-hour-label-bg: 55 65 81; /* #374151 */
+        --timesheet-hour-label-text: 209 213 219; /* #d1d5db */
+    }
+
     html {
         font-family: system-ui, -apple-system, sans-serif;
+        background-color: rgb(var(--bg-primary));
+        transition: background-color 0.2s ease-in-out;
     }
 
     body {
-        background-color: #fafafa;
-        color: #1f2937;
+        background-color: rgb(var(--bg-primary));
+        color: rgb(var(--text-primary));
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
     }
 }
 
@@ -19,6 +139,10 @@
     /* PrimeVue Toast Customization */
     .p-toast .p-toast-message .p-toast-detail {
         color: rgba(0, 0, 0, 0.7) !important;
+    }
+
+    .dark .p-toast .p-toast-message .p-toast-detail {
+        color: rgba(255, 255, 255, 0.8) !important;
     }
 
     .p-toast .p-toast-message-success .p-toast-detail {
@@ -37,40 +161,42 @@
         color: rgba(139, 0, 0, 0.8) !important;
     }
 
-    /* Timesheet Grid Components */
+    /* Timesheet Grid Components - Theme Aware */
     .timesheet-grid {
         display: grid;
         gap: 1px;
-        background-color: #e5e7eb;
-        border: 1px solid #d1d5db;
+        background-color: rgb(var(--timesheet-bg));
+        border: 1px solid rgb(var(--timesheet-border));
         border-radius: 0.5rem;
         overflow: hidden;
         grid-template-columns: 80px repeat(4, 1fr);
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
     }
 
     .timesheet-hour-label {
-        background-color: #f3f4f6;
-        border-right: 1px solid #d1d5db;
+        background-color: rgb(var(--timesheet-hour-label-bg));
+        border-right: 1px solid rgb(var(--timesheet-border));
         padding: 0.75rem 0.5rem;
         font-size: 0.875rem;
         font-weight: 500;
-        color: #374151;
+        color: rgb(var(--timesheet-hour-label-text));
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
     }
 
     .timesheet-slot {
-        background-color: white;
-        border: 1px solid #e5e7eb;
+        background-color: rgb(var(--timesheet-slot-bg));
+        border: 1px solid rgb(var(--border-primary));
         height: 3rem;
         cursor: pointer;
-        transition: background-color 0.15s ease-in-out;
+        transition: background-color 0.15s ease-in-out, border-color 0.2s ease-in-out;
         position: relative;
     }
 
     .timesheet-slot:hover {
-        background-color: #f9fafb;
+        background-color: rgb(var(--timesheet-slot-hover));
     }
 
     .timesheet-slot.filled {
@@ -86,10 +212,10 @@
         box-shadow: 0 0 0 2px #3b82f6;
     }
 
-    /* Custom scrollbar for timesheet */
+    /* Custom scrollbar for timesheet - Theme Aware */
     .timesheet-container {
         scrollbar-width: thin;
-        scrollbar-color: #cbd5e1 #f1f5f9;
+        scrollbar-color: rgb(var(--border-secondary)) rgb(var(--bg-tertiary));
     }
 
     .timesheet-container::-webkit-scrollbar {
@@ -98,30 +224,313 @@
     }
 
     .timesheet-container::-webkit-scrollbar-track {
-        background-color: #f1f5f9;
+        background-color: rgb(var(--bg-tertiary));
     }
 
     .timesheet-container::-webkit-scrollbar-thumb {
-        background-color: #94a3b8;
+        background-color: rgb(var(--border-secondary));
         border-radius: 9999px;
     }
 
     .timesheet-container::-webkit-scrollbar-thumb:hover {
-        background-color: #64748b;
+        background-color: rgb(var(--border-primary));
+    }
+
+    /* App Layout Components - Theme Aware */
+    .app-header {
+        background-color: rgb(var(--bg-secondary));
+        border-bottom: 1px solid rgb(var(--border-primary));
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    }
+
+    .app-sidebar {
+        background-color: rgb(var(--bg-secondary));
+        border-right: 1px solid rgb(var(--border-primary));
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    }
+
+    .app-main {
+        background-color: rgb(var(--bg-primary));
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    /* Card and Panel Components */
+    .app-card {
+        background-color: rgb(var(--bg-secondary));
+        border: 1px solid rgb(var(--border-primary));
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
     }
 }
 
 @layer utilities {
-    /* Utility classes for time formatting */
+    /* Theme-aware utility classes */
+    .bg-app-primary {
+        background-color: rgb(var(--bg-primary));
+    }
+
+    .bg-app-secondary {
+        background-color: rgb(var(--bg-secondary));
+    }
+
+    .bg-app-tertiary {
+        background-color: rgb(var(--bg-tertiary));
+    }
+
+    .text-app-primary {
+        color: rgb(var(--text-primary));
+    }
+
+    .text-app-secondary {
+        color: rgb(var(--text-secondary));
+    }
+
+    .border-app-primary {
+        border-color: rgb(var(--border-primary));
+    }
+
+    .border-app-secondary {
+        border-color: rgb(var(--border-secondary));
+    }
+
+    /* ===== BLUE UTILITIES ===== */
+    .bg-app-blue-50 { background-color: rgb(var(--blue-50)); }
+    .bg-app-blue-100 { background-color: rgb(var(--blue-100)); }
+    .bg-app-blue-200 { background-color: rgb(var(--blue-200)); }
+    .bg-app-blue-500 { background-color: rgb(var(--blue-500)); }
+    .bg-app-blue-600 { background-color: rgb(var(--blue-600)); }
+    .bg-app-blue-700 { background-color: rgb(var(--blue-700)); }
+    .bg-app-blue-800 { background-color: rgb(var(--blue-800)); }
+    .bg-app-blue-900 { background-color: rgb(var(--blue-900)); }
+
+    .text-app-blue-50 { color: rgb(var(--blue-50)); }
+    .text-app-blue-100 { color: rgb(var(--blue-100)); }
+    .text-app-blue-200 { color: rgb(var(--blue-200)); }
+    .text-app-blue-500 { color: rgb(var(--blue-500)); }
+    .text-app-blue-600 { color: rgb(var(--blue-600)); }
+    .text-app-blue-700 { color: rgb(var(--blue-700)); }
+    .text-app-blue-800 { color: rgb(var(--blue-800)); }
+    .text-app-blue-900 { color: rgb(var(--blue-900)); }
+
+    .border-app-blue-50 { border-color: rgb(var(--blue-50)); }
+    .border-app-blue-100 { border-color: rgb(var(--blue-100)); }
+    .border-app-blue-200 { border-color: rgb(var(--blue-200)); }
+    .border-app-blue-500 { border-color: rgb(var(--blue-500)); }
+    .border-app-blue-600 { border-color: rgb(var(--blue-600)); }
+    .border-app-blue-700 { border-color: rgb(var(--blue-700)); }
+    .border-app-blue-800 { border-color: rgb(var(--blue-800)); }
+    .border-app-blue-900 { border-color: rgb(var(--blue-900)); }
+
+    /* ===== GREEN UTILITIES ===== */
+    .bg-app-green-50 { background-color: rgb(var(--green-50)); }
+    .bg-app-green-200 { background-color: rgb(var(--green-200)); }
+    .bg-app-green-600 { background-color: rgb(var(--green-600)); }
+    .bg-app-green-800 { background-color: rgb(var(--green-800)); }
+
+    .text-app-green-50 { color: rgb(var(--green-50)); }
+    .text-app-green-200 { color: rgb(var(--green-200)); }
+    .text-app-green-600 { color: rgb(var(--green-600)); }
+    .text-app-green-800 { color: rgb(var(--green-800)); }
+
+    .border-app-green-50 { border-color: rgb(var(--green-50)); }
+    .border-app-green-200 { border-color: rgb(var(--green-200)); }
+    .border-app-green-600 { border-color: rgb(var(--green-600)); }
+    .border-app-green-800 { border-color: rgb(var(--green-800)); }
+
+    /* ===== PURPLE UTILITIES ===== */
+    .bg-app-purple-50 { background-color: rgb(var(--purple-50)); }
+    .bg-app-purple-600 { background-color: rgb(var(--purple-600)); }
+    .bg-app-purple-800 { background-color: rgb(var(--purple-800)); }
+
+    .text-app-purple-50 { color: rgb(var(--purple-50)); }
+    .text-app-purple-600 { color: rgb(var(--purple-600)); }
+    .text-app-purple-800 { color: rgb(var(--purple-800)); }
+
+    .border-app-purple-50 { border-color: rgb(var(--purple-50)); }
+    .border-app-purple-600 { border-color: rgb(var(--purple-600)); }
+    .border-app-purple-800 { border-color: rgb(var(--purple-800)); }
+
+    /* ===== ORANGE UTILITIES ===== */
+    .bg-app-orange-50 { background-color: rgb(var(--orange-50)); }
+    .bg-app-orange-200 { background-color: rgb(var(--orange-200)); }
+    .bg-app-orange-600 { background-color: rgb(var(--orange-600)); }
+    .bg-app-orange-800 { background-color: rgb(var(--orange-800)); }
+
+    .text-app-orange-50 { color: rgb(var(--orange-50)); }
+    .text-app-orange-200 { color: rgb(var(--orange-200)); }
+    .text-app-orange-600 { color: rgb(var(--orange-600)); }
+    .text-app-orange-800 { color: rgb(var(--orange-800)); }
+
+    .border-app-orange-50 { border-color: rgb(var(--orange-50)); }
+    .border-app-orange-200 { border-color: rgb(var(--orange-200)); }
+    .border-app-orange-600 { border-color: rgb(var(--orange-600)); }
+    .border-app-orange-800 { border-color: rgb(var(--orange-800)); }
+
+    /* ===== YELLOW UTILITIES ===== */
+    .bg-app-yellow-50 { background-color: rgb(var(--yellow-50)); }
+    .bg-app-yellow-200 { background-color: rgb(var(--yellow-200)); }
+    .bg-app-yellow-600 { background-color: rgb(var(--yellow-600)); }
+
+    .text-app-yellow-50 { color: rgb(var(--yellow-50)); }
+    .text-app-yellow-200 { color: rgb(var(--yellow-200)); }
+    .text-app-yellow-600 { color: rgb(var(--yellow-600)); }
+
+    .border-app-yellow-50 { border-color: rgb(var(--yellow-50)); }
+    .border-app-yellow-200 { border-color: rgb(var(--yellow-200)); }
+    .border-app-yellow-600 { border-color: rgb(var(--yellow-600)); }
+
+    /* ===== RED UTILITIES ===== */
+    .bg-app-red-50 { background-color: rgb(var(--red-50)); }
+    .bg-app-red-200 { background-color: rgb(var(--red-200)); }
+    .bg-app-red-500 { background-color: rgb(var(--red-500)); }
+    .bg-app-red-600 { background-color: rgb(var(--red-600)); }
+    .bg-app-red-800 { background-color: rgb(var(--red-800)); }
+
+    .text-app-red-50 { color: rgb(var(--red-50)); }
+    .text-app-red-200 { color: rgb(var(--red-200)); }
+    .text-app-red-500 { color: rgb(var(--red-500)); }
+    .text-app-red-600 { color: rgb(var(--red-600)); }
+    .text-app-red-800 { color: rgb(var(--red-800)); }
+
+    .border-app-red-50 { border-color: rgb(var(--red-50)); }
+    .border-app-red-200 { border-color: rgb(var(--red-200)); }
+    .border-app-red-500 { border-color: rgb(var(--red-500)); }
+    .border-app-red-600 { border-color: rgb(var(--red-600)); }
+    .border-app-red-800 { border-color: rgb(var(--red-800)); }
+
+    /* ===== HOVER STATES ===== */
+    /* Base colors hover */
+    .hover\:bg-app-primary:hover { background-color: rgb(var(--bg-primary)); }
+    .hover\:bg-app-secondary:hover { background-color: rgb(var(--bg-secondary)); }
+    .hover\:bg-app-tertiary:hover { background-color: rgb(var(--bg-tertiary)); }
+    .hover\:text-app-primary:hover { color: rgb(var(--text-primary)); }
+    .hover\:text-app-secondary:hover { color: rgb(var(--text-secondary)); }
+    .hover\:border-app-primary:hover { border-color: rgb(var(--border-primary)); }
+    .hover\:border-app-secondary:hover { border-color: rgb(var(--border-secondary)); }
+
+    /* Blue hover states */
+    .hover\:bg-app-blue-50:hover { background-color: rgb(var(--blue-50)); }
+    .hover\:bg-app-blue-100:hover { background-color: rgb(var(--blue-100)); }
+    .hover\:bg-app-blue-200:hover { background-color: rgb(var(--blue-200)); }
+    .hover\:bg-app-blue-500:hover { background-color: rgb(var(--blue-500)); }
+    .hover\:bg-app-blue-600:hover { background-color: rgb(var(--blue-600)); }
+    .hover\:bg-app-blue-700:hover { background-color: rgb(var(--blue-700)); }
+    .hover\:bg-app-blue-800:hover { background-color: rgb(var(--blue-800)); }
+    .hover\:bg-app-blue-900:hover { background-color: rgb(var(--blue-900)); }
+
+    .hover\:text-app-blue-600:hover { color: rgb(var(--blue-600)); }
+    .hover\:text-app-blue-700:hover { color: rgb(var(--blue-700)); }
+    .hover\:text-app-blue-800:hover { color: rgb(var(--blue-800)); }
+
+    /* Green hover states */
+    .hover\:bg-app-green-50:hover { background-color: rgb(var(--green-50)); }
+    .hover\:bg-app-green-600:hover { background-color: rgb(var(--green-600)); }
+    .hover\:bg-app-green-800:hover { background-color: rgb(var(--green-800)); }
+    .hover\:text-app-green-600:hover { color: rgb(var(--green-600)); }
+    .hover\:text-app-green-800:hover { color: rgb(var(--green-800)); }
+
+    /* Red hover states */
+    .hover\:bg-app-red-50:hover { background-color: rgb(var(--red-50)); }
+    .hover\:bg-app-red-600:hover { background-color: rgb(var(--red-600)); }
+    .hover\:bg-app-red-800:hover { background-color: rgb(var(--red-800)); }
+    .hover\:text-app-red-600:hover { color: rgb(var(--red-600)); }
+    .hover\:text-app-red-800:hover { color: rgb(var(--red-800)); }
+
+    /* Other semantic colors hover states */
+    .hover\:bg-app-purple-600:hover { background-color: rgb(var(--purple-600)); }
+    .hover\:bg-app-orange-600:hover { background-color: rgb(var(--orange-600)); }
+    .hover\:bg-app-yellow-600:hover { background-color: rgb(var(--yellow-600)); }
+
+    /* ===== FOCUS STATES ===== */
+    .focus\:bg-app-tertiary:focus { background-color: rgb(var(--bg-tertiary)); }
+    .focus\:border-app-secondary:focus { border-color: rgb(var(--border-secondary)); }
+    .focus\:text-app-primary:focus { color: rgb(var(--text-primary)); }
+
+    .focus\:ring-app-primary:focus { --tw-ring-color: rgb(var(--border-primary)); }
+    .focus\:ring-app-blue-500:focus { --tw-ring-color: rgb(var(--blue-500)); }
+    .focus\:ring-app-blue-600:focus { --tw-ring-color: rgb(var(--blue-600)); }
+
+    /* ===== ACTIVE STATES ===== */
+    .active\:bg-app-tertiary:active { background-color: rgb(var(--bg-tertiary)); }
+    .active\:text-app-primary:active { color: rgb(var(--text-primary)); }
+    .active\:border-app-secondary:active { border-color: rgb(var(--border-secondary)); }
+
+    /* ===== SELECTION STATES ===== */
+    .selection\:bg-app-blue-200::selection { background-color: rgb(var(--blue-200)); }
+    .selection\:text-app-blue-900::selection { color: rgb(var(--blue-900)); }
+
+    /* ===== PLACEHOLDER STATES ===== */
+    .placeholder\:text-app-secondary::placeholder { color: rgb(var(--text-secondary)); }
+
+    /* ===== DIVIDE UTILITIES ===== */
+    .divide-app-primary > :not([hidden]) ~ :not([hidden]) { border-color: rgb(var(--border-primary)); }
+    .divide-app-secondary > :not([hidden]) ~ :not([hidden]) { border-color: rgb(var(--border-secondary)); }
+
+    /* ===== RING UTILITIES ===== */
+    .ring-app-primary { --tw-ring-color: rgb(var(--border-primary)); }
+    .ring-app-secondary { --tw-ring-color: rgb(var(--border-secondary)); }
+    .ring-app-blue-500 { --tw-ring-color: rgb(var(--blue-500)); }
+    .ring-app-blue-600 { --tw-ring-color: rgb(var(--blue-600)); }
+
+    /* ===== SHADOW UTILITIES (optional theme-aware shadows) ===== */
+    .shadow-app {
+        box-shadow: 0 1px 3px 0 rgb(var(--border-primary) / 0.1), 0 1px 2px -1px rgb(var(--border-primary) / 0.1);
+    }
+    .shadow-app-md {
+        box-shadow: 0 4px 6px -1px rgb(var(--border-primary) / 0.1), 0 2px 4px -2px rgb(var(--border-primary) / 0.1);
+    }
+    .shadow-app-lg {
+        box-shadow: 0 10px 15px -3px rgb(var(--border-primary) / 0.1), 0 4px 6px -4px rgb(var(--border-primary) / 0.1);
+    }
+
+    /* ===== OUTLINE UTILITIES ===== */
+    .outline-app-primary { outline-color: rgb(var(--border-primary)); }
+    .outline-app-blue-500 { outline-color: rgb(var(--blue-500)); }
+
+    /* ===== DECORATION UTILITIES ===== */
+    .decoration-app-blue-500 { text-decoration-color: rgb(var(--blue-500)); }
+    .decoration-app-blue-600 { text-decoration-color: rgb(var(--blue-600)); }
+
+    /* ===== CARET UTILITIES ===== */
+    .caret-app-blue-500 { caret-color: rgb(var(--blue-500)); }
+    .caret-app-blue-600 { caret-color: rgb(var(--blue-600)); }
+
+    /* ===== ACCENT UTILITIES ===== */
+    .accent-app-blue-500 { accent-color: rgb(var(--blue-500)); }
+    .accent-app-blue-600 { accent-color: rgb(var(--blue-600)); }
+
+    /* ===== UTILITY CLASSES FOR EXISTING PATTERNS ===== */
     .time-display {
         font-variant-numeric: tabular-nums;
     }
 
-    /* Prevent text selection during drag operations */
     .no-select {
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
+    }
+
+    /* ===== COMPONENT-SPECIFIC UTILITIES ===== */
+    .app-card {
+        background-color: rgb(var(--bg-secondary));
+        border: 1px solid rgb(var(--border-primary));
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    }
+
+    .app-header {
+        background-color: rgb(var(--bg-secondary));
+        border-bottom: 1px solid rgb(var(--border-primary));
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    }
+
+    .app-sidebar {
+        background-color: rgb(var(--bg-secondary));
+        border-right: 1px solid rgb(var(--border-primary));
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    }
+
+    .app-main {
+        background-color: rgb(var(--bg-primary));
+        transition: background-color 0.2s ease-in-out;
     }
 }

@@ -8,12 +8,12 @@
         @click="showMobileSidebar = false"
     >
       <div
-          class="bg-white w-80 h-full shadow-xl transform transition-transform duration-300"
+          class="bg-app-secondary w-80 h-full shadow-xl transform transition-transform duration-300"
           @click.stop
       >
         <!-- Mobile Sidebar Header -->
-        <div class="flex items-center justify-between p-4 border-b border-gray-200">
-          <h3 class="text-lg font-semibold text-gray-900">Select Task</h3>
+        <div class="flex items-center justify-between p-4 border-b border-app-primary">
+          <h3 class="text-lg font-semibold text-app-primary">Select Task</h3>
           <Button
               icon="pi pi-times"
               severity="secondary"
@@ -30,14 +30,14 @@
     </div>
 
     <!-- Desktop Task Sidebar -->
-    <div class="hidden lg:block w-80 flex-shrink-0 bg-white border-r border-gray-200">
+    <div class="hidden lg:block w-80 flex-shrink-0 bg-primary border-r border-primary">
       <TaskSidebar />
     </div>
 
     <!-- Timesheet Area -->
     <div class="flex-1 flex flex-col min-w-0">
       <!-- Current Day Header -->
-      <div class="bg-white border-b border-gray-200 p-4 lg:p-6">
+      <div class="bg-app-secondary border-b border-app-primary p-4 lg:p-6">
         <!-- Mobile Header -->
         <div class="lg:hidden">
           <!-- Mobile Top Row: Task Button + Date -->
@@ -88,7 +88,7 @@
           </div>
 
           <!-- Mobile Actions Panel -->
-          <div v-if="showMobileActions" class="bg-gray-50 rounded-lg p-3 mb-3">
+          <div v-if="showMobileActions" class="bg-app-primary rounded-lg p-3 mb-3">
             <div class="grid grid-cols-3 gap-2">
               <Button
                   @click="showQuickAdd = true; showMobileActions = false"
@@ -117,7 +117,7 @@
             </div>
           </div>
 
-          <p class="text-gray-600 text-sm text-center">
+          <p class="text-app-secondary text-sm text-center">
             Tap Tasks to select, then paint time slots
           </p>
         </div>
@@ -158,7 +158,7 @@
                     variant="text"
                 />
               </div>
-              <p class="text-gray-600 mt-1">
+              <p class="text-app-secondary mt-1">
                 Track your time by selecting a task and painting time slots
               </p>
             </div>
@@ -193,67 +193,67 @@
 
           <!-- Daily Statistics -->
         <div class="mt-4 lg:mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          <div class="bg-blue-50 rounded-lg p-3 lg:p-4 text-center">
-            <div class="text-lg lg:text-2xl font-bold text-blue-600">
+          <div class="bg-app-blue-50 rounded-lg p-3 lg:p-4 text-center">
+            <div class="text-lg lg:text-2xl font-bold text-app-blue-600">
               {{ formatDuration(timesheetStore.totalTrackedMinutes) }}
             </div>
-            <div class="text-xs lg:text-sm text-blue-800">Total Tracked</div>
+            <div class="text-xs lg:text-sm text-app-blue-800">Total Tracked</div>
           </div>
 
-          <div class="bg-green-50 rounded-lg p-3 lg:p-4 text-center">
-            <div class="text-lg lg:text-2xl font-bold text-green-600">
+          <div class="bg-app-green-50 rounded-lg p-3 lg:p-4 text-center">
+            <div class="text-lg lg:text-2xl font-bold text-app-green-600">
               {{ timesheetStore.timeEntries.length }}
             </div>
-            <div class="text-xs lg:text-sm text-green-800">Time Entries</div>
+            <div class="text-xs lg:text-sm text-app-green-800">Time Entries</div>
           </div>
 
-          <div class="bg-purple-50 rounded-lg p-3 lg:p-4 text-center">
-            <div class="text-lg lg:text-2xl font-bold text-purple-600">
+          <div class="bg-app-purple-50 rounded-lg p-3 lg:p-4 text-center">
+            <div class="text-lg lg:text-2xl font-bold text-app-purple-600">
               {{ uniqueTasksCount }}
             </div>
-            <div class="text-xs lg:text-sm text-purple-800">Tasks Used</div>
+            <div class="text-xs lg:text-sm text-app-purple-800">Tasks Used</div>
           </div>
 
-          <div class="bg-orange-50 rounded-lg p-3 lg:p-4 text-center">
-            <div class="text-lg lg:text-2xl font-bold text-orange-600">
+          <div class="bg-app-orange-50 rounded-lg p-3 lg:p-4 text-center">
+            <div class="text-lg lg:text-2xl font-bold text-app-orange-600">
               {{ completionPercentage }}%
             </div>
-            <div class="text-xs lg:text-sm text-orange-800">Day Progress</div>
+            <div class="text-xs lg:text-sm text-app-orange-800">Day Progress</div>
           </div>
         </div>
 
         <!-- Timesheet Grid -->
         <div class="flex-1 overflow-auto p-2 lg:p-6">
-          <div class="bg-white rounded-lg border border-gray-200 p-2 lg:p-4">
+          <div class="bg-app-secondary rounded-lg border border-app-primary p-2 lg:p-4">
             <TimesheetGrid />
           </div>
         </div>
 
         <!-- Time Breakdown Footer -->
-        <div class="bg-white border-t border-gray-200 p-2 lg:p-4">
+        <div class="bg-app-secondary border-t border-app-gray-primary p-2 lg:p-4">
           <div class="block lg:flex lg:items-center lg:justify-between">
             <!-- Time Breakdown by Task -->
             <div class="mb-3 lg:mb-0">
-              <span class="text-sm font-medium text-gray-700 block lg:inline">Today's Breakdown:</span>
+              <span class="text-sm font-medium text-app-primary block lg:inline">Today's Breakdown:</span>
               <div class="flex items-center space-x-2 lg:space-x-4 flex-wrap mt-2 lg:mt-0 lg:ml-4">
                 <div
                     v-for="(breakdown, taskId) in timeBreakdown"
                     :key="taskId"
-                    class="flex items-center space-x-1 lg:space-x-2 px-2 lg:px-3 py-1 bg-gray-50 rounded-full"
+                    class="flex items-center space-x-1 lg:space-x-2 px-2 lg:px-3 py-1 bg-app-primary rounded-full"
                 >
                   <div
                       class="w-2 h-2 lg:w-3 lg:h-3 rounded-full"
                       :style="{ backgroundColor: breakdown.color }"
                   ></div>
-                  <span class="text-xs lg:text-sm font-medium text-gray-700 truncate max-w-20 lg:max-w-none">
+                  <span class="text-xs lg:text-sm font-medium text-app-primary truncate max-w-20 lg:max-w-none">
             {{ breakdown.taskTitle }}
           </span>
-                  <span class="text-xs lg:text-sm text-gray-600">
+                  <span class="text-xs lg:text-sm text-app-secondary">
             {{ formatDuration(breakdown.minutes) }}
           </span>
                 </div>
 
-                <div v-if="Object.keys(timeBreakdown).length === 0" class="text-xs lg:text-sm text-gray-500">
+                <div v-if="Object.keys(timeBreakdown).length === 0" class="text-xs lg:text-sm text-app-secondary">
                   No time entries yet - start by selecting a task and painting time slots!
                 </div>
               </div>
@@ -286,11 +286,11 @@
         :style="{ width: '500px' }"
     >
       <div class="space-y-4">
-        <div class="text-sm text-gray-600">
+        <div class="text-sm text-app-secondary">
           Quickly add a time entry for today without using the timesheet grid.
         </div>
         <!-- Quick add form would go here -->
-        <div class="text-center py-8 text-gray-500">
+        <div class="text-center py-8 text-app-secondary">
           <i class="pi pi-clock text-3xl mb-2"></i>
           <div>Quick add functionality coming soon!</div>
         </div>
@@ -546,18 +546,6 @@ useHead({
 
 <style scoped>
 /* Component-specific styles */
-.menubar {
-  border: none !important;
-  background: transparent !important;
-  padding: 0 !important;
-}
-
-/* Ensure sticky header works properly */
-.sticky {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
 
 /* Custom scrollbar for timesheet area */
 .overflow-auto::-webkit-scrollbar {

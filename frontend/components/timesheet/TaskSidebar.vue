@@ -1,9 +1,9 @@
 <template>
-  <div class="task-sidebar bg-white border-r border-gray-200 h-full flex flex-col">
+  <div class="task-sidebar bg-app-secondary border-r border-app-primary h-full flex flex-col">
     <!-- Header -->
-    <div class="p-4 border-b border-gray-200">
+    <div class="p-4 border-b border-app-primary">
       <div class="flex items-center justify-between mb-3">
-        <h2 class="text-lg font-semibold text-gray-900">
+        <h2 class="text-lg font-semibold text-app-primary">
           Available Tasks
         </h2>
         <Button
@@ -18,22 +18,22 @@
 
       <!-- Selected Task Display -->
       <div v-if="selectedTask" class="mb-3">
-        <div class="text-sm text-gray-600 mb-1">Selected Task:</div>
-        <div class="flex items-center p-2 bg-blue-50 border border-blue-200 rounded-lg">
+        <div class="text-sm text-app-secondary mb-1">Selected Task:</div>
+        <div class="flex items-center p-2 bg-app-blue-50 border border-app-blue-200 rounded-lg">
           <div
               class="w-4 h-4 rounded mr-2 flex-shrink-0"
               :style="{ backgroundColor: selectedTask.color }"
           ></div>
           <div class="flex-1 min-w-0">
-            <div class="font-medium text-blue-900 truncate">{{ selectedTask.title }}</div>
-            <div class="text-xs text-blue-700 truncate">{{ selectedTask.categoryTitle }}</div>
+            <div class="font-medium text-app-blue-900 truncate">{{ selectedTask.title }}</div>
+            <div class="text-xs text-app-blue-700 truncate">{{ selectedTask.categoryTitle }}</div>
           </div>
           <Button
               icon="pi pi-times"
               size="small"
               text
               @click="clearSelection"
-              class="ml-2 w-6 h-6 text-blue-600"
+              class="ml-2 w-6 h-6 text-app-blue-600"
           />
         </div>
       </div>
@@ -63,7 +63,7 @@
       <!-- Loading State -->
       <div v-if="tasksStore.loading" class="p-4 text-center">
         <ProgressSpinner size="32px" />
-        <div class="text-sm text-gray-600 mt-2">Loading tasks...</div>
+        <div class="text-sm text-app-secondary mt-2">Loading tasks...</div>
       </div>
 
       <!-- Error State -->
@@ -92,9 +92,9 @@
         >
           <!-- Category Header -->
           <div class="mb-2">
-            <div class="text-sm font-medium text-gray-700 px-2">
+            <div class="text-sm font-medium text-app-primary px-2">
               {{ categoryName }}
-              <span class="text-xs text-gray-500 ml-1">({{ tasks.length }})</span>
+              <span class="text-xs text-app-secondary ml-1">({{ tasks.length }})</span>
             </div>
           </div>
 
@@ -107,34 +107,34 @@
                 @contextmenu="handleTaskRightClick($event, task)"
                 class="task-item flex items-center p-2 rounded-lg cursor-pointer transition-colors duration-150"
                 :class="{
-                'bg-blue-100 border border-blue-300': selectedTask?.id === task.id,
-                'hover:bg-gray-50 border border-transparent': selectedTask?.id !== task.id
+                'bg-app-blue-100 border border-app-blue-200': selectedTask?.id === task.id,
+                'hover:bg-app-tertiary border border-transparent': selectedTask?.id !== task.id
               }"
             >
               <!-- Task Color -->
               <div
-                  class="w-4 h-4 rounded mr-3 flex-shrink-0 border border-gray-300"
+                  class="w-4 h-4 rounded mr-3 flex-shrink-0 border border-app-primary"
                   :style="{ backgroundColor: task.color }"
               ></div>
 
               <!-- Task Info -->
               <div class="flex-1 min-w-0">
-                <div class="font-medium text-gray-900 truncate">
+                <div class="font-medium text-app-primary truncate">
                   {{ task.title }}
                 </div>
-                <div v-if="task.description" class="text-xs text-gray-600 truncate">
+                <div v-if="task.description" class="text-xs text-app-secondary truncate">
                   {{ task.description }}
                 </div>
               </div>
 
               <!-- Task Icon -->
               <div v-if="task.icon" class="ml-2 flex-shrink-0">
-                <i :class="`pi pi-${task.icon} text-gray-400 text-sm`"></i>
+                <i :class="`pi pi-${task.icon} text-app-secondary text-sm`"></i>
               </div>
 
               <!-- Selection Indicator -->
               <div v-if="selectedTask?.id === task.id" class="ml-2 flex-shrink-0">
-                <i class="pi pi-check text-blue-600 text-sm"></i>
+                <i class="pi pi-check text-app-blue-600 text-sm"></i>
               </div>
             </div>
           </div>
@@ -143,10 +143,10 @@
 
       <!-- Empty State -->
       <div v-else class="p-4 text-center">
-        <div class="text-gray-400 mb-2">
+        <div class="text-app-secondary mb-2">
           <i class="pi pi-bookmark text-3xl"></i>
         </div>
-        <div class="text-sm text-gray-600 mb-3">No tasks available</div>
+        <div class="text-sm text-app-secondary mb-3">No tasks available</div>
         <Button
             label="Create First Task"
             icon="pi pi-plus"
@@ -157,8 +157,8 @@
     </div>
 
     <!-- Footer Stats -->
-    <div class="p-3 border-t border-gray-200 bg-gray-50">
-      <div class="text-xs text-gray-600 text-center">
+    <div class="p-3 border-t border-app-primary bg-app-primary">
+      <div class="text-xs text-app-secondary text-center">
         {{ totalActiveTasks }} active tasks across {{ totalCategories }} categories
       </div>
     </div>
@@ -204,20 +204,20 @@
                       :style="{ backgroundColor: data.color }"
                   ></div>
                   <span class="font-medium">{{ data.title }}</span>
-                  <i v-if="data.icon" :class="`pi pi-${data.icon} text-gray-400`"></i>
+                  <i v-if="data.icon" :class="`pi pi-${data.icon} text-app-secondary`"></i>
                 </div>
               </template>
             </Column>
 
             <Column field="categoryTitle" header="Category" class="w-1/4">
               <template #body="{ data }">
-                <span class="text-gray-600">{{ data.categoryTitle }}</span>
+                <span class="text-app-secondary">{{ data.categoryTitle }}</span>
               </template>
             </Column>
 
             <Column field="sortOrder" header="Order" class="w-1/6 text-center">
               <template #body="{ data }">
-                <span class="text-gray-500">{{ data.sortOrder }}</span>
+                <span class="text-app-secondary">{{ data.sortOrder }}</span>
               </template>
             </Column>
 
@@ -259,7 +259,7 @@
         </div>
 
         <!-- Actions -->
-        <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+        <div class="flex justify-between items-center pt-4 border-t border-app-primary">
           <Button
               label="Create New Task"
               icon="pi pi-plus"
@@ -328,13 +328,13 @@
 
             <Column field="activeTaskCount" header="Tasks" class="w-1/6 text-center">
               <template #body="{ data }">
-                <span class="text-gray-600">{{ data.activeTaskCount }}/{{ data.taskCount }}</span>
+                <span class="text-app-secondary">{{ data.activeTaskCount }}/{{ data.taskCount }}</span>
               </template>
             </Column>
 
             <Column field="sortOrder" header="Order" class="w-1/6 text-center">
               <template #body="{ data }">
-                <span class="text-gray-500">{{ data.sortOrder }}</span>
+                <span class="text-app-secondary">{{ data.sortOrder }}</span>
               </template>
             </Column>
 
@@ -362,7 +362,7 @@
         </div>
 
         <!-- Actions -->
-        <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+        <div class="flex justify-between items-center pt-4 border-t border-app-primary">
           <Button
               label="Create New Category"
               icon="pi pi-plus"

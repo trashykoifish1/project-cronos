@@ -24,7 +24,11 @@ export default defineNuxtConfig({
       theme: {
         preset: Aura,
         options: {
-          darkModeSelector: 'light',
+          darkModeSelector: '.dark'
+        },
+        cssLayer: {
+          name: 'primevue',
+          order: 'theme, base, primevue'
         }
       },
       ripple: true
@@ -41,22 +45,14 @@ export default defineNuxtConfig({
         './app.vue',
         './error.vue'
       ],
+      darkMode: 'class',
       theme: {
         extend: {
-          colors: {
-            // Custom colors for time tracking
-            timesheet: {
-              background: '#fafafa',
-              border: '#e5e7eb',
-              hover: '#f3f4f6',
-              selected: '#dbeafe'
-            }
-          },
           spacing: {
-            '15': '3.75rem', // For 15-minute intervals
+            '15': '3.75rem',
           },
           gridTemplateColumns: {
-            'timesheet': '80px repeat(4, 1fr)', // Time label + 4 15-min columns
+            'timesheet': '80px repeat(4, 1fr)',
           }
         }
       },

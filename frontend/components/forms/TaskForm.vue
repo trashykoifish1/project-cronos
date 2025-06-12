@@ -2,8 +2,8 @@
   <form @submit.prevent="handleSubmit" class="space-y-4">
     <!-- Task Title -->
     <div>
-      <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
-        Task Title <span class="text-red-500">*</span>
+      <label for="title" class="block text-sm font-medium text-app-primary mb-1">
+        Task Title <span class="text-app-red-500">*</span>
       </label>
       <InputText
           id="title"
@@ -18,8 +18,8 @@
 
     <!-- Category Selection -->
     <div>
-      <label for="category" class="block text-sm font-medium text-gray-700 mb-1">
-        Category <span class="text-red-500">*</span>
+      <label for="category" class="block text-sm font-medium text-app-primary mb-1">
+        Category <span class="text-app-red-500">*</span>
       </label>
       <Dropdown
           id="category"
@@ -36,7 +36,7 @@
 
     <!-- Task Description -->
     <div>
-      <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+      <label for="description" class="block text-sm font-medium text-app-primary mb-1">
         Description
       </label>
       <Textarea
@@ -50,8 +50,8 @@
 
     <!-- Color Selection -->
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">
-        Task Color <span class="text-red-500">*</span>
+      <label class="block text-sm font-medium text-app-primary mb-2">
+        Task Color <span class="text-app-red-500">*</span>
       </label>
       <div class="space-y-3">
         <!-- Color Picker -->
@@ -59,7 +59,7 @@
           <input
               type="color"
               v-model="formData.color"
-              class="w-12 h-8 border border-gray-300 rounded cursor-pointer"
+              class="w-12 h-8 border border-app-primary rounded cursor-pointer"
           />
           <InputText
               v-model="formData.color"
@@ -71,14 +71,14 @@
 
         <!-- Preset Colors -->
         <div>
-          <div class="text-xs text-gray-600 mb-2">Quick Colors:</div>
+          <div class="text-xs text-app-secondary mb-2">Quick Colors:</div>
           <div class="flex flex-wrap gap-2">
             <button
                 v-for="color in presetColors"
                 :key="color"
                 type="button"
                 @click="formData.color = color"
-                class="w-8 h-8 rounded border-2 border-gray-300 hover:scale-110 transition-transform"
+                class="w-8 h-8 rounded border-2 border-app-primary hover:scale-110 transition-transform"
                 :class="{ 'ring-2 ring-blue-500': formData.color === color }"
                 :style="{ backgroundColor: color }"
                 :title="color"
@@ -91,14 +91,14 @@
 
     <!-- Icon Selection -->
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">
+      <label class="block text-sm font-medium text-app-primary mb-2">
         Task Icon (Optional)
       </label>
       <div class="space-y-3">
         <!-- Selected Icon Display -->
         <div v-if="formData.icon" class="flex items-center space-x-2">
           <i :class="`pi pi-${formData.icon} text-xl`" :style="{ color: formData.color }"></i>
-          <span class="text-sm text-gray-600">{{ formData.icon }}</span>
+          <span class="text-sm text-app-secondary">{{ formData.icon }}</span>
           <Button
               type="button"
               icon="pi pi-times"
@@ -110,14 +110,14 @@
         </div>
 
         <!-- Icon Grid -->
-        <div class="grid grid-cols-8 gap-2 max-h-32 overflow-y-auto p-2 border border-gray-200 rounded">
+        <div class="grid grid-cols-8 gap-2 max-h-32 overflow-y-auto p-2 border border-app-primary rounded">
           <button
               v-for="icon in availableIcons"
               :key="icon"
               type="button"
               @click="formData.icon = icon"
-              class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
-              :class="{ 'bg-blue-100 text-blue-600': formData.icon === icon }"
+              class="w-8 h-8 flex items-center justify-center rounded hover:bg-app-tertiary transition-colors"
+              :class="{ 'bg-app-blue-100 text-app-blue-600': formData.icon === icon }"
               :title="icon"
           >
             <i :class="`pi pi-${icon}`"></i>
@@ -128,7 +128,7 @@
 
     <!-- Sort Order -->
     <div>
-      <label for="sortOrder" class="block text-sm font-medium text-gray-700 mb-1">
+      <label for="sortOrder" class="block text-sm font-medium text-app-primary mb-1">
         Sort Order
       </label>
       <InputNumber
@@ -138,11 +138,11 @@
           :max="999"
           class="w-full"
       />
-      <small class="text-gray-500">Lower numbers appear first</small>
+      <small class="text-app-secondary">Lower numbers appear first</small>
     </div>
 
     <!-- Submit Buttons -->
-    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+    <div class="flex justify-end space-x-3 pt-4 border-t border-app-primary">
       <Button
           type="button"
           label="Cancel"

@@ -4,8 +4,8 @@
     <div class="mb-6">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">Daily Reports</h1>
-          <p class="text-gray-600 mt-1">
+          <h1 class="text-2xl font-bold text-app-primary">Daily Reports</h1>
+          <p class="text-app-secondary mt-1">
             View detailed breakdown of your daily time tracking
           </p>
         </div>
@@ -59,14 +59,14 @@
     <!-- Loading State -->
     <div v-if="loading" class="flex items-center justify-center py-12">
       <ProgressSpinner />
-      <span class="ml-3 text-gray-600">Loading daily report...</span>
+      <span class="ml-3 text-app-secondary">Loading daily report...</span>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-      <i class="pi pi-exclamation-triangle text-red-600 text-2xl mb-2"></i>
-      <h3 class="text-lg font-semibold text-red-800 mb-2">Failed to Load Report</h3>
-      <p class="text-red-600 mb-4">{{ error }}</p>
+    <div v-else-if="error" class="bg-app-red-50 border border-app-red-200 rounded-lg p-6 text-center">
+      <i class="pi pi-exclamation-triangle text-app-red-600 text-2xl mb-2"></i>
+      <h3 class="text-lg font-semibold text-app-red-800 mb-2">Failed to Load Report</h3>
+      <p class="text-app-red-600 mb-4">{{ error }}</p>
       <Button
           label="Retry"
           icon="pi pi-refresh"
@@ -82,37 +82,37 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card class="text-center">
           <template #content>
-            <div class="text-3xl font-bold text-blue-600 mb-2">
+            <div class="text-3xl font-bold text-app-blue-600 mb-2">
               {{ reportData.totalTimeFormatted || '0h 0m' }}
             </div>
-            <div class="text-sm text-gray-600">Total Time Tracked</div>
+            <div class="text-sm text-app-secondary">Total Time Tracked</div>
           </template>
         </Card>
 
         <Card class="text-center">
           <template #content>
-            <div class="text-3xl font-bold text-green-600 mb-2">
+            <div class="text-3xl font-bold text-app-green-600 mb-2">
               {{ reportData.totalEntries || 0 }}
             </div>
-            <div class="text-sm text-gray-600">Time Entries</div>
+            <div class="text-sm text-app-secondary">Time Entries</div>
           </template>
         </Card>
 
         <Card class="text-center">
           <template #content>
-            <div class="text-3xl font-bold text-purple-600 mb-2">
+            <div class="text-3xl font-bold text-app-purple-600 mb-2">
               {{ reportData.categoryBreakdowns?.length || 0 }}
             </div>
-            <div class="text-sm text-gray-600">Categories Used</div>
+            <div class="text-sm text-app-secondary">Categories Used</div>
           </template>
         </Card>
 
         <Card class="text-center">
           <template #content>
-            <div class="text-3xl font-bold text-orange-600 mb-2">
+            <div class="text-3xl font-bold text-app-orange-600 mb-2">
               {{ reportData.taskBreakdowns?.length || 0 }}
             </div>
-            <div class="text-sm text-gray-600">Tasks Used</div>
+            <div class="text-sm text-app-secondary">Tasks Used</div>
           </template>
         </Card>
       </div>
@@ -123,7 +123,7 @@
         <Card>
           <template #title>
             <div class="flex items-center">
-              <i class="pi pi-chart-pie text-purple-600 mr-2"></i>
+              <i class="pi pi-chart-pie text-app-purple-600 mr-2"></i>
               Task Distribution
             </div>
           </template>
@@ -134,12 +134,12 @@
                 <canvas ref="taskPieChart"></canvas>
               </div>
               <div class="mt-4 text-center">
-                <p class="text-sm text-gray-600">
+                <p class="text-sm text-app-secondary">
                   Time distribution across {{ reportData.taskBreakdowns.length }} tasks
                 </p>
               </div>
             </div>
-            <div v-else class="text-center py-8 text-gray-500">
+            <div v-else class="text-center py-8 text-app-secondary">
               <i class="pi pi-chart-pie text-3xl mb-2"></i>
               <div>No task data to visualize</div>
             </div>
@@ -150,7 +150,7 @@
         <Card>
           <template #title>
             <div class="flex items-center">
-              <i class="pi pi-clock text-blue-600 mr-2"></i>
+              <i class="pi pi-clock text-app-blue-600 mr-2"></i>
               Daily Timeline
             </div>
           </template>
@@ -164,12 +164,12 @@
                     class="flex items-center space-x-2"
                 >
                   <!-- Hour Label -->
-                  <div class="w-12 text-xs text-gray-600 font-mono">
+                  <div class="w-12 text-xs text-app-secondary font-mono">
                     {{ formatHour(hour) }}
                   </div>
 
                   <!-- Timeline Bar -->
-                  <div class="flex-1 relative h-6 bg-gray-100 rounded">
+                  <div class="flex-1 relative h-6 bg-app-tertiary rounded">
                     <div
                         v-for="entry in getEntriesForHour(hour)"
                         :key="entry.id"
@@ -200,7 +200,7 @@
                 </div>
               </div>
             </div>
-            <div v-else class="text-center py-8 text-gray-500">
+            <div v-else class="text-center py-8 text-app-secondary">
               <i class="pi pi-clock text-3xl mb-2"></i>
               <div>No timeline data available</div>
             </div>
@@ -219,34 +219,34 @@
         <template #content>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Peak Hours -->
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-              <div class="text-2xl font-bold text-blue-600 mb-1">
+            <div class="text-center p-4 bg-app-blue-50 rounded-lg">
+              <div class="text-2xl font-bold text-app-blue-600 mb-1">
                 {{ peakHour }}
               </div>
-              <div class="text-sm text-blue-800">Peak Hour</div>
-              <div class="text-xs text-gray-600 mt-1">
+              <div class="text-sm text-app-blue-800">Peak Hour</div>
+              <div class="text-xs text-app-secondary mt-1">
                 Most productive time
               </div>
             </div>
 
             <!-- Average Session -->
-            <div class="text-center p-4 bg-green-50 rounded-lg">
-              <div class="text-2xl font-bold text-green-600 mb-1">
+            <div class="text-center p-4 bg-app-green-50 rounded-lg">
+              <div class="text-2xl font-bold text-app-green-600 mb-1">
                 {{ averageSessionLength }}
               </div>
-              <div class="text-sm text-green-800">Avg Session</div>
-              <div class="text-xs text-gray-600 mt-1">
+              <div class="text-sm text-app-green-800">Avg Session</div>
+              <div class="text-xs text-app-secondary mt-1">
                 Average work session
               </div>
             </div>
 
             <!-- Focus Score -->
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
-              <div class="text-2xl font-bold text-purple-600 mb-1">
+            <div class="text-center p-4 bg-app-purple-50 rounded-lg">
+              <div class="text-2xl font-bold text-app-purple-600 mb-1">
                 {{ focusScore }}%
               </div>
-              <div class="text-sm text-purple-800">Focus Score</div>
-              <div class="text-xs text-gray-600 mt-1">
+              <div class="text-sm text-app-purple-800">Focus Score</div>
+              <div class="text-xs text-app-secondary mt-1">
                 Task switching frequency
               </div>
             </div>
@@ -259,22 +259,22 @@
                 :key="insight.type"
                 class="flex items-start p-3 rounded-lg"
                 :class="{
-          'bg-green-50 border border-green-200': insight.type === 'positive',
-          'bg-yellow-50 border border-yellow-200': insight.type === 'suggestion',
-          'bg-blue-50 border border-blue-200': insight.type === 'info'
+          'bg-app-green-50 border border-app-green-200': insight.type === 'positive',
+          'bg-app-yellow-50 border border-yellow-200': insight.type === 'suggestion',
+          'bg-app-blue-50 border border-app-blue-200': insight.type === 'info'
         }"
             >
               <i
                   class="mt-0.5 mr-3"
                   :class="{
-            'pi pi-check-circle text-green-600': insight.type === 'positive',
+            'pi pi-check-circle text-app-green-600': insight.type === 'positive',
             'pi pi-exclamation-triangle text-yellow-600': insight.type === 'suggestion',
-            'pi pi-info-circle text-blue-600': insight.type === 'info'
+            'pi pi-info-circle text-app-blue-600': insight.type === 'info'
           }"
               ></i>
               <div>
-                <div class="font-medium text-gray-900">{{ insight.title }}</div>
-                <div class="text-sm text-gray-600">{{ insight.message }}</div>
+                <div class="font-medium text-app-primary">{{ insight.title }}</div>
+                <div class="text-sm text-app-secondary">{{ insight.message }}</div>
               </div>
             </div>
           </div>
@@ -285,7 +285,7 @@
       <Card>
         <template #title>
           <div class="flex items-center">
-            <i class="pi pi-folder text-blue-600 mr-2"></i>
+            <i class="pi pi-folder text-app-blue-600 mr-2"></i>
             Time by Category
           </div>
         </template>
@@ -294,10 +294,10 @@
             <div
                 v-for="category in reportData.categoryBreakdowns"
                 :key="category.categoryId"
-                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                class="flex items-center justify-between p-3 bg-app-primary rounded-lg"
             >
               <div class="flex items-center space-x-3">
-                <div class="text-lg font-medium text-gray-900">
+                <div class="text-lg font-medium text-app-primary">
                   {{ category.categoryTitle }}
                 </div>
                 <Badge
@@ -305,12 +305,12 @@
                     severity="info"
                 />
               </div>
-              <div class="text-lg font-semibold text-blue-600">
+              <div class="text-lg font-semibold text-app-blue-600">
                 {{ category.timeFormatted }}
               </div>
             </div>
           </div>
-          <div v-else class="text-center py-8 text-gray-500">
+          <div v-else class="text-center py-8 text-app-secondary">
             <i class="pi pi-inbox text-3xl mb-2"></i>
             <div>No categories tracked for this date</div>
           </div>
@@ -321,7 +321,7 @@
       <Card>
         <template #title>
           <div class="flex items-center">
-            <i class="pi pi-bookmark text-purple-600 mr-2"></i>
+            <i class="pi pi-bookmark text-app-purple-600 mr-2"></i>
             Time by Task
           </div>
         </template>
@@ -330,7 +330,7 @@
             <div
                 v-for="task in reportData.taskBreakdowns"
                 :key="task.taskId"
-                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                class="flex items-center justify-between p-3 bg-app-primary rounded-lg"
             >
               <div class="flex items-center space-x-3">
                 <div
@@ -338,20 +338,20 @@
                     :style="{ backgroundColor: task.taskColor }"
                 ></div>
                 <div>
-                  <div class="font-medium text-gray-900">{{ task.taskTitle }}</div>
-                  <div class="text-sm text-gray-600">{{ task.categoryTitle }}</div>
+                  <div class="font-medium text-app-primary">{{ task.taskTitle }}</div>
+                  <div class="text-sm text-app-secondary">{{ task.categoryTitle }}</div>
                 </div>
                 <Badge
                     :value="`${task.entryCount} entries`"
                     severity="info"
                 />
               </div>
-              <div class="text-lg font-semibold text-purple-600">
+              <div class="text-lg font-semibold text-app-purple-600">
                 {{ task.timeFormatted }}
               </div>
             </div>
           </div>
-          <div v-else class="text-center py-8 text-gray-500">
+          <div v-else class="text-center py-8 text-app-secondary">
             <i class="pi pi-bookmark text-3xl mb-2"></i>
             <div>No tasks tracked for this date</div>
           </div>
@@ -362,7 +362,7 @@
       <Card v-if="reportData.warnings?.length > 0">
         <template #title>
           <div class="flex items-center">
-            <i class="pi pi-exclamation-triangle text-orange-600 mr-2"></i>
+            <i class="pi pi-exclamation-triangle text-app-orange-600 mr-2"></i>
             Warnings & Insights
           </div>
         </template>
@@ -371,10 +371,10 @@
             <div
                 v-for="(warning, index) in reportData.warnings"
                 :key="index"
-                class="flex items-center p-3 bg-orange-50 border border-orange-200 rounded-lg"
+                class="flex items-center p-3 bg-app-orange-50 border border-orange-200 rounded-lg"
             >
-              <i class="pi pi-info-circle text-orange-600 mr-3"></i>
-              <span class="text-orange-800">{{ warning }}</span>
+              <i class="pi pi-info-circle text-app-orange-600 mr-3"></i>
+              <span class="text-app-orange-800">{{ warning }}</span>
             </div>
           </div>
         </template>
@@ -385,7 +385,7 @@
         <template #title>
           <div class="flex items-center justify-between">
             <div class="flex items-center">
-              <i class="pi pi-clock text-green-600 mr-2"></i>
+              <i class="pi pi-clock text-app-green-600 mr-2"></i>
               Time Entries Detail
             </div>
             <Button
@@ -427,18 +427,18 @@
               <Column field="categoryTitle" header="Category" />
               <Column field="description" header="Description">
                 <template #body="slotProps">
-                  <span class="text-gray-600">
+                  <span class="text-app-secondary">
                     {{ slotProps.data.description || '—' }}
                   </span>
                 </template>
               </Column>
             </DataTable>
           </div>
-          <div v-else class="text-center py-8 text-gray-500">
+          <div v-else class="text-center py-8 text-app-secondary">
             <i class="pi pi-clock text-3xl mb-2"></i>
             <div>No time entries found for this date</div>
             <p class="text-sm mt-2">
-              <NuxtLink to="/" class="text-blue-600 hover:underline">
+              <NuxtLink to="/" class="text-app-blue-600 hover:underline">
                 Go to timesheet to start tracking time
               </NuxtLink>
             </p>
@@ -449,9 +449,9 @@
 
     <!-- No Data State -->
     <div v-else class="text-center py-12">
-      <i class="pi pi-calendar text-4xl text-gray-400 mb-4"></i>
-      <h3 class="text-lg font-semibold text-gray-700 mb-2">No Data Available</h3>
-      <p class="text-gray-600 mb-4">
+      <i class="pi pi-calendar text-4xl text-app-secondary mb-4"></i>
+      <h3 class="text-lg font-semibold text-app-primary mb-2">No Data Available</h3>
+      <p class="text-app-secondary mb-4">
         No time tracking data found for {{ formatDateLong(selectedDate) }}
       </p>
       <Button
