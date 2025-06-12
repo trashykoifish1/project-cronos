@@ -1,5 +1,3 @@
-// Complete updated tasks.ts store with all missing functions:
-
 import { defineStore } from 'pinia'
 import type { Task, TaskCreateRequest, TaskUpdateRequest } from '~/types/api'
 

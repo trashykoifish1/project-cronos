@@ -2,8 +2,8 @@
   <form @submit.prevent="handleSubmit" class="space-y-4">
     <!-- Category Title -->
     <div>
-      <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
-        Category Title <span class="text-red-500">*</span>
+      <label for="title" class="block text-sm font-medium text-app-primary mb-1">
+        Category Title <span class="text-app-red-500">*</span>
       </label>
       <InputText
           id="title"
@@ -18,7 +18,7 @@
 
     <!-- Category Description -->
     <div>
-      <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+      <label for="description" class="block text-sm font-medium text-app-primary mb-1">
         Description
       </label>
       <Textarea
@@ -28,7 +28,7 @@
           rows="3"
           class="w-full"
       />
-      <small class="text-gray-500">Describe what types of tasks belong in this category</small>
+      <small class="text-app-secondary">Describe what types of tasks belong in this category</small>
     </div>
 
     <!-- Category Options -->
@@ -39,18 +39,18 @@
             v-model="formData.isDefault"
             :binary="true"
         />
-        <label for="isDefault" class="ml-2 text-sm text-gray-700">
+        <label for="isDefault" class="ml-2 text-sm text-app-primary">
           Set as default category
         </label>
       </div>
-      <small v-if="formData.isDefault" class="text-blue-600 text-xs">
+      <small v-if="formData.isDefault" class="text-app-blue-600 text-xs">
         New tasks will be assigned to this category by default
       </small>
     </div>
 
     <!-- Sort Order -->
     <div>
-      <label for="sortOrder" class="block text-sm font-medium text-gray-700 mb-1">
+      <label for="sortOrder" class="block text-sm font-medium text-app-primary mb-1">
         Sort Order
       </label>
       <InputNumber
@@ -60,7 +60,7 @@
           :max="999"
           class="w-full"
       />
-      <small class="text-gray-500">Lower numbers appear first in the list</small>
+      <small class="text-app-secondary">Lower numbers appear first in the list</small>
     </div>
 
     <!-- Archive Option (only for editing) -->
@@ -71,17 +71,17 @@
             v-model="formData.isArchived"
             :binary="true"
         />
-        <label for="isArchived" class="ml-2 text-sm text-gray-700">
+        <label for="isArchived" class="ml-2 text-sm text-app-primary">
           Archive this category
         </label>
       </div>
-      <small v-if="formData.isArchived" class="text-orange-600 text-xs">
+      <small v-if="formData.isArchived" class="text-app-orange-600 text-xs">
         Archived categories are hidden but preserve existing data
       </small>
     </div>
 
     <!-- Submit Buttons -->
-    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+    <div class="flex justify-end space-x-3 pt-4 border-t border-app-primary">
       <Button
           type="button"
           label="Cancel"

@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col">
+  <div class="min-h-screen bg-app-primary flex flex-col">
     <!-- Top Navigation Bar -->
-    <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="bg-app-secondary border-b border-app-primary sticky top-0 z-10">
       <div class="px-4 sm:px-6 py-3 sm:py-4">
         <!-- Mobile Header -->
         <div class="flex items-center justify-between md:hidden">
@@ -16,8 +16,8 @@
           />
 
           <!-- Mobile Logo -->
-          <h1 class="text-xl font-bold text-gray-900 flex items-center">
-            <i class="pi pi-clock text-blue-600 mr-2"></i>
+          <h1 class="text-xl font-bold text-app-primary flex items-center">
+            <i class="pi pi-clock text-app-blue-600 mr-2"></i>
             Time Tracker
           </h1>
 
@@ -39,22 +39,23 @@
                 v-tooltip.bottom="'Help'"
                 class="w-8 h-8"
             />
+            <ThemeToggle variant="text" :is-mobile="true" />
           </div>
         </div>
 
         <!-- Desktop Navigation -->
         <div class="hidden md:block">
-          <Menubar :model="menuItems" class="border-0 bg-transparent p-0">
+          <Menubar :model="menuItems" class="border-0 bg-transparent p-0 menubar">
             <template #start>
-              <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-                <i class="pi pi-clock text-blue-600 mr-2"></i>
+              <h1 class="text-2xl font-bold text-app-primary flex items-center">
+                <i class="pi pi-clock text-app-blue-600 mr-2"></i>
                 Time Tracker
               </h1>
             </template>
             <template #end>
               <div class="flex items-center space-x-3">
                 <div class="flex items-center space-x-3">
-                  <span class="text-sm text-gray-600">Local Admin</span>
+                  <span class="text-sm text-app-secondary">Local Admin</span>
                   <Button
                       icon="pi pi-cog"
                       severity="secondary"
@@ -69,6 +70,7 @@
                       @click="showHelp = true"
                       v-tooltip.bottom="'Help'"
                   />
+                  <ThemeToggle variant="text" :is-mobile="true" />
                 </div>
               </div>
             </template>
@@ -84,12 +86,12 @@
         @click="showMobileMenu = false"
     >
       <div
-          class="bg-white w-80 h-full shadow-xl transform transition-transform duration-300"
+          class="bg-app-secondary w-80 h-full shadow-xl transform transition-transform duration-300"
           @click.stop
       >
         <!-- Mobile Menu Header -->
-        <div class="flex items-center justify-between p-4 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-900">Navigation</h2>
+        <div class="flex items-center justify-between p-4 border-b border-app-primary">
+          <h2 class="text-lg font-semibold text-app-primary">Navigation</h2>
           <Button
               icon="pi pi-times"
               severity="secondary"
@@ -101,13 +103,13 @@
         <!-- Mobile Menu Content -->
         <div class="p-4 space-y-2">
           <!-- User Info -->
-          <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg mb-4">
-            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+          <div class="flex items-center space-x-3 p-3 bg-app-primary rounded-lg mb-4">
+            <div class="w-10 h-10 bg-app-blue-600 rounded-full flex items-center justify-center">
               <i class="pi pi-user text-white"></i>
             </div>
             <div>
-              <div class="font-medium text-gray-900">Local Admin</div>
-              <div class="text-sm text-gray-600">Administrator</div>
+              <div class="font-medium text-app-primary">Local Admin</div>
+              <div class="text-sm text-app-secondary">Administrator</div>
             </div>
           </div>
 
@@ -115,9 +117,9 @@
           <div class="space-y-1">
             <button
                 @click="navigateAndClose('/')"
-                class="w-full flex items-center p-3 text-left hover:bg-gray-100 rounded-lg transition-colors"
+                class="w-full flex items-center p-3 text-left hover:bg-app-tertiary rounded-lg transition-colors"
             >
-              <i class="pi pi-calendar text-blue-600 mr-3"></i>
+              <i class="pi pi-calendar text-app-blue-600 mr-3"></i>
               <span class="font-medium">Timesheet</span>
             </button>
 
@@ -125,10 +127,10 @@
             <div class="space-y-1">
               <button
                   @click="showReportsSubmenu = !showReportsSubmenu"
-                  class="w-full flex items-center justify-between p-3 text-left hover:bg-gray-100 rounded-lg transition-colors"
+                  class="w-full flex items-center justify-between p-3 text-left hover:bg-app-tertiary rounded-lg transition-colors"
               >
                 <div class="flex items-center">
-                  <i class="pi pi-chart-bar text-purple-600 mr-3"></i>
+                  <i class="pi pi-chart-bar text-app-purple-600 mr-3"></i>
                   <span class="font-medium">Reports</span>
                 </div>
                 <i class="pi" :class="showReportsSubmenu ? 'pi-chevron-down' : 'pi-chevron-right'"></i>
@@ -137,23 +139,23 @@
               <div v-if="showReportsSubmenu" class="ml-6 space-y-1">
                 <button
                     @click="navigateAndClose('/reports/daily')"
-                    class="w-full flex items-center p-2 text-left hover:bg-gray-100 rounded-lg transition-colors text-sm"
+                    class="w-full flex items-center p-2 text-left hover:bg-app-tertiary rounded-lg transition-colors text-sm"
                 >
-                  <i class="pi pi-calendar text-gray-500 mr-2"></i>
+                  <i class="pi pi-calendar text-app-secondary mr-2"></i>
                   Daily Reports
                 </button>
                 <button
                     @click="navigateAndClose('/reports/weekly')"
-                    class="w-full flex items-center p-2 text-left hover:bg-gray-100 rounded-lg transition-colors text-sm"
+                    class="w-full flex items-center p-2 text-left hover:bg-app-tertiary rounded-lg transition-colors text-sm"
                 >
-                  <i class="pi pi-chart-line text-gray-500 mr-2"></i>
+                  <i class="pi pi-chart-line text-app-secondary mr-2"></i>
                   Weekly Summary
                 </button>
                 <button
                     @click="navigateAndClose('/reports/monthly')"
-                    class="w-full flex items-center p-2 text-left hover:bg-gray-100 rounded-lg transition-colors text-sm"
+                    class="w-full flex items-center p-2 text-left hover:bg-app-tertiary rounded-lg transition-colors text-sm"
                 >
-                  <i class="pi pi-chart-pie text-gray-500 mr-2"></i>
+                  <i class="pi pi-chart-pie text-app-secondary mr-2"></i>
                   Monthly Overview
                 </button>
               </div>
@@ -162,18 +164,18 @@
             <!-- Export -->
             <button
                 @click="showPlaceholder('Export'); showMobileMenu = false"
-                class="w-full flex items-center p-3 text-left hover:bg-gray-100 rounded-lg transition-colors"
+                class="w-full flex items-center p-3 text-left hover:bg-app-tertiary rounded-lg transition-colors"
             >
-              <i class="pi pi-download text-green-600 mr-3"></i>
+              <i class="pi pi-download text-app-green-600 mr-3"></i>
               <span class="font-medium">Export</span>
             </button>
 
             <!-- Manage -->
             <button
                 @click="showPlaceholder('Manage'); showMobileMenu = false"
-                class="w-full flex items-center p-3 text-left hover:bg-gray-100 rounded-lg transition-colors"
+                class="w-full flex items-center p-3 text-left hover:bg-app-tertiary rounded-lg transition-colors"
             >
-              <i class="pi pi-cog text-orange-600 mr-3"></i>
+              <i class="pi pi-cog text-app-orange-600 mr-3"></i>
               <span class="font-medium">Manage</span>
             </button>
           </div>
@@ -182,8 +184,9 @@
     </div>
 
     <!-- Page Content -->
-    <slot />
-
+    <div class="app-main">
+      <slot />
+    </div>
     <!-- Global Dialogs -->
 
     <!-- Settings Dialog -->
@@ -195,24 +198,24 @@
     >
       <div class="space-y-6">
         <div>
-          <h3 class="text-lg font-semibold text-gray-800 mb-3">Application Settings</h3>
+          <h3 class="text-lg font-semibold text-app-primary mb-3">Application Settings</h3>
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-700">Time Zone</span>
-              <span class="text-sm text-gray-500">UTC (Local Admin)</span>
+              <span class="text-sm text-app-primary">Time Zone</span>
+              <span class="text-sm text-app-secondary">UTC (Local Admin)</span>
             </div>
             <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-700">Working Hours</span>
-              <span class="text-sm text-gray-500">7:00 AM - 5:00 PM</span>
+              <span class="text-sm text-app-primary">Working Hours</span>
+              <span class="text-sm text-app-secondary">7:00 AM - 5:00 PM</span>
             </div>
             <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-700">Time Interval</span>
-              <span class="text-sm text-gray-500">15 minutes</span>
+              <span class="text-sm text-app-primary">Time Interval</span>
+              <span class="text-sm text-app-secondary">15 minutes</span>
             </div>
           </div>
         </div>
 
-        <div class="text-center py-4 text-gray-500">
+        <div class="text-center py-4 text-app-secondary">
           <i class="pi pi-cog text-3xl mb-2"></i>
           <div>Advanced settings coming soon!</div>
         </div>
@@ -231,9 +234,9 @@
     >
       <div>
         <div class="p-6">
-          <div class="space-y-4 text-sm text-gray-600">
+          <div class="space-y-4 text-sm text-app-secondary">
             <div>
-              <h4 class="font-semibold text-gray-800 mb-2">Getting Started</h4>
+              <h4 class="font-semibold text-app-primary mb-2">Getting Started</h4>
               <ol class="list-decimal list-inside space-y-1">
                 <li>Select a task from the sidebar on the left</li>
                 <li>Click and drag across time slots to create time entries</li>
@@ -243,7 +246,7 @@
             </div>
 
             <div>
-              <h4 class="font-semibold text-gray-800 mb-2">Navigation</h4>
+              <h4 class="font-semibold text-app-primary mb-2">Navigation</h4>
               <ul class="list-disc list-inside space-y-1">
                 <li>Use the ← → arrows to navigate days quickly</li>
                 <li>Click "Today" to jump to the current date</li>
@@ -252,7 +255,7 @@
             </div>
 
             <div>
-              <h4 class="font-semibold text-gray-800 mb-2">Tips</h4>
+              <h4 class="font-semibold text-app-primary mb-2">Tips</h4>
               <ul class="list-disc list-inside space-y-1">
                 <li>Each slot represents 15 minutes of time</li>
                 <li>Different tasks are shown in different colors</li>
