@@ -80,26 +80,10 @@
     </div>
 
     <!-- Mobile Menu Overlay -->
-    <div
-        v-if="showMobileMenu"
-        class="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden"
-        @click="showMobileMenu = false"
+    <Drawer
+        v-model:visible="showMobileMenu"
+        class="bg-black md:hidden"
     >
-      <div
-          class="bg-app-secondary w-80 h-full shadow-xl transform transition-transform duration-300"
-          @click.stop
-      >
-        <!-- Mobile Menu Header -->
-        <div class="flex items-center justify-between p-4 border-b border-app-primary">
-          <h2 class="text-lg font-semibold text-app-primary">Navigation</h2>
-          <Button
-              icon="pi pi-times"
-              severity="secondary"
-              text
-              @click="showMobileMenu = false"
-          />
-        </div>
-
         <!-- Mobile Menu Content -->
         <div class="p-4 space-y-2">
           <!-- User Info -->
@@ -180,8 +164,7 @@
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </Drawer>
 
     <!-- Page Content -->
     <div class="app-main">
