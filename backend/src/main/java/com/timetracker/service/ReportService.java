@@ -315,6 +315,94 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Get enhanced statistics with additional monthly insights
+     */
+    public Map<String, Object> getEnhancedStatistics(LocalDate startDate, LocalDate endDate) {
+        User user = userService.getCurrentUser();
+        List<TimeEntry> entries = timeEntryRepository.findByUserAndEntryDateBetweenOrderByEntryDateAscStartTimeAsc(
+                user, startDate, endDate);
+
+        Map<String, Object> stats = getStatistics(startDate, endDate);
+
+        if (entries.isEmpty()) {
+            return stats;
+        }
+
+        // Add category breakdown with enhanced info
+        List<Map<String, Object>> categoryBreakdown = entries.stream()
+                .collect(Collectors.groupingBy(entry -> entry.getTask().getCategory()))
+                .entrySet().stream()
+                .map(entry -> {
+                    Category category = entry.getKey();
+                    List<TimeEntry> categoryEntries = entry.getValue();
+                    int totalMinutes = categoryEntries.stream().mapToInt(TimeEntry::getDurationMinutes).sum();
+
+                    Map<String, Object> categoryData = new HashMap<>();
+                    categoryData.put("categoryId", category.getId());
+                    categoryData.put("categoryTitle", category.getTitle());
+                    categoryData.put("totalMinutes", totalMinutes);
+                    categoryData.put("timeFormatted", formatMinutes(totalMinutes));
+                    categoryData.put("entryCount", categoryEntries.size());
+
+                    return categoryData;
+                })
+                .sorted((a, b) -> Integer.compare((Integer) b.get("totalMinutes"), (Integer) a.get("totalMinutes")))
+                .collect(Collectors.toList());
+
+        stats.put("categoryBreakdown", categoryBreakdown);
+
+        // Add task breakdown with enhanced info
+        List<Map<String, Object>> taskBreakdown = entries.stream()
+                .collect(Collectors.groupingBy(TimeEntry::getTask))
+                .entrySet().stream()
+                .map(entry -> {
+                    Task task = entry.getKey();
+                    List<TimeEntry> taskEntries = entry.getValue();
+                    int totalMinutes = taskEntries.stream().mapToInt(TimeEntry::getDurationMinutes).sum();
+
+                    Map<String, Object> taskData = new HashMap<>();
+                    taskData.put("taskId", task.getId());
+                    taskData.put("taskTitle", task.getTitle());
+                    taskData.put("taskColor", task.getColor());
+                    taskData.put("categoryTitle", task.getCategory().getTitle());
+                    taskData.put("totalMinutes", totalMinutes);
+                    taskData.put("timeFormatted", formatMinutes(totalMinutes));
+                    taskData.put("entryCount", taskEntries.size());
+
+                    return taskData;
+                })
+                .sorted((a, b) -> Integer.compare((Integer) b.get("totalMinutes"), (Integer) a.get("totalMinutes")))
+                .collect(Collectors.toList());
+
+        stats.put("taskBreakdown", taskBreakdown);
+
+        // Add weekday vs weekend breakdown
+        int weekdayMinutes = 0;
+        int weekendMinutes = 0;
+
+        for (TimeEntry entry : entries) {
+            DayOfWeek dayOfWeek = entry.getEntryDate().getDayOfWeek();
+            if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+                weekendMinutes += entry.getDurationMinutes();
+            } else {
+                weekdayMinutes += entry.getDurationMinutes();
+            }
+        }
+
+        stats.put("weekdayMinutes", weekdayMinutes);
+        stats.put("weekendMinutes", weekendMinutes);
+
+        // Add session statistics
+        OptionalDouble avgSession = entries.stream().mapToInt(TimeEntry::getDurationMinutes).average();
+        int longestSession = entries.stream().mapToInt(TimeEntry::getDurationMinutes).max().orElse(0);
+
+        stats.put("averageSession", avgSession.orElse(0.0));
+        stats.put("longestSession", longestSession);
+
+        return stats;
+    }
+
     private String formatMinutes(int minutes) {
         if (minutes == 0) {
             return "0m";

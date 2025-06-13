@@ -54,6 +54,17 @@ public class ReportController {
         return ResponseEntity.ok(ApiResponse.success(statistics));
     }
 
+    @GetMapping("/enhanced-statistics")
+    @Operation(summary = "Get enhanced statistics", description = "Get enhanced statistics with category and task breakdowns for a date range")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getEnhancedStatistics(
+            @Parameter(description = "Start date (YYYY-MM-DD)")
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @Parameter(description = "End date (YYYY-MM-DD)")
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        Map<String, Object> statistics = reportService.getEnhancedStatistics(startDate, endDate);
+        return ResponseEntity.ok(ApiResponse.success(statistics));
+    }
+
     @GetMapping("/productivity-insights")
     @Operation(summary = "Get productivity insights", description = "Get productivity analysis and insights for a date range")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getProductivityInsights(
@@ -110,4 +121,5 @@ public class ReportController {
         Map<String, Object> statistics = reportService.getStatistics(startDate, endDate);
         return ResponseEntity.ok(ApiResponse.success(statistics));
     }
+
 }
