@@ -170,7 +170,7 @@
         border-radius: 0.5rem;
         overflow: hidden;
         grid-template-columns: 80px repeat(4, 1fr);
-        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
     }
 
     .timesheet-hour-label {
@@ -183,7 +183,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        transition: background-color 0.2s ease-out, color 0.2s ease-out, border-color 0.2s ease-out;
     }
 
     .timesheet-slot {
@@ -191,8 +191,8 @@
         border: 1px solid rgb(var(--border-primary));
         height: 3rem;
         cursor: pointer;
-        transition: background-color 0.15s ease-in-out, border-color 0.2s ease-in-out;
         position: relative;
+        transition: background-color 0.2s ease-out;
     }
 
     .timesheet-slot:hover {
@@ -206,13 +206,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: none;
     }
 
     .timesheet-slot.dragging {
         box-shadow: 0 0 0 2px #3b82f6;
     }
 
-    /* Custom scrollbar for timesheet - Theme Aware */
+    /* Custom scrollbar for timesheet */
     .timesheet-container {
         scrollbar-width: thin;
         scrollbar-color: rgb(var(--border-secondary)) rgb(var(--bg-tertiary));
@@ -236,7 +237,7 @@
         background-color: rgb(var(--border-primary));
     }
 
-    /* App Layout Components - Theme Aware */
+    /* App Layout Components */
     .app-header {
         background-color: rgb(var(--bg-secondary));
         border-bottom: 1px solid rgb(var(--border-primary));
@@ -254,7 +255,6 @@
         transition: background-color 0.2s ease-in-out;
     }
 
-    /* Card and Panel Components */
     .app-card {
         background-color: rgb(var(--bg-secondary));
         border: 1px solid rgb(var(--border-primary));

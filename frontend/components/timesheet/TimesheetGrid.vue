@@ -476,4 +476,12 @@ onUnmounted(() => {
     min-width: 500px;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .timesheet-grid,
+  .timesheet-slot,
+  .timesheet-hour-label {
+    transition: none !important;
+  }
+}
 </style>
