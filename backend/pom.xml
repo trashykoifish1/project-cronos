@@ -14,7 +14,7 @@
 
     <groupId>com.timetracker</groupId>
     <artifactId>timetracker-backend</artifactId>
-    <version>1.0.0</version>
+    <version>0.2.0-alpha</version>
     <packaging>jar</packaging>
 
     <name>Time Tracker Backend</name>
