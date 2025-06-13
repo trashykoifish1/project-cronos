@@ -42,6 +42,13 @@ public class TaskController {
         return ResponseEntity.ok(ApiResponse.success(tasks));
     }
 
+    @GetMapping
+    @Operation(summary = "Get all tasks", description = "Retrieve all tasks for the current user across all categories")
+    public ResponseEntity<ApiResponse<List<TaskResponse>>> getAllTasksForUser() {
+        List<TaskResponse> tasks = taskService.getAllTasksForUser();
+        return ResponseEntity.ok(ApiResponse.success(tasks));
+    }
+
     @GetMapping("/active")
     @Operation(summary = "Get all active tasks", description = "Retrieve all active tasks for the current user across all categories")
     public ResponseEntity<ApiResponse<List<TaskResponse>>> getAllActiveTasksForUser() {

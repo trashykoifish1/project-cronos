@@ -28,6 +28,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT t FROM Task t JOIN t.category c WHERE c.user = :user AND t.isArchived = false ORDER BY c.title ASC, t.sortOrder ASC, t.title ASC")
     List<Task> findActiveByUser(@Param("user") User user);
 
+    @Query("SELECT t FROM Task t JOIN t.category c WHERE c.user = :user ORDER BY c.title ASC, t.sortOrder ASC, t.title ASC")
+    List<Task> findAllByUser(@Param("user") User user);
+
     boolean existsByCategoryAndTitle(Category category, String title);
 
     boolean existsByCategoryAndColor(Category category, String color);

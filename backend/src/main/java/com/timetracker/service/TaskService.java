@@ -53,6 +53,16 @@ public class TaskService {
     }
 
     /**
+     * Get all tasks for the current user (across all categories)
+     */
+    @Transactional(readOnly = true)
+    public List<TaskResponse> getAllTasksForUser() {
+        User user = userService.getCurrentUser();
+        List<Task> tasks = taskRepository.findAllByUser(user);
+        return taskMapper.toTaskResponseList(tasks);
+    }
+
+    /**
      * Get all active tasks for the current user (across all categories)
      */
     @Transactional(readOnly = true)
