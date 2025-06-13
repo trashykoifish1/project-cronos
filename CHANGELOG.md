@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Frontend:
   - Implemented all "Reports" pages
   - Added landing page
+  - Implemented all "Manage" pages
+
+### Remove
+
+- Removed "Export" placeholder pages
+  - Reason: the "export" function can be accessed through many different pages and does not seem to need its own page
 
 ## [0.1.0-alpha] - 2025-06-10
 
