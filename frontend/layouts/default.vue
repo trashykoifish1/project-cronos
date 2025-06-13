@@ -16,10 +16,12 @@
           />
 
           <!-- Mobile Logo -->
-          <h1 class="text-xl font-bold text-app-primary flex items-center">
-            <i class="pi pi-clock text-app-blue-600 mr-2"></i>
-            Time Tracker
-          </h1>
+          <NuxtLink to="/">
+            <h1 class="text-xl font-bold text-app-primary flex items-center">
+              <i class="pi pi-clock text-app-blue-600 mr-2"></i>
+              Project Cronos
+            </h1>
+          </NuxtLink>
 
           <!-- Mobile User Actions -->
           <div class="flex items-center space-x-2">
@@ -47,10 +49,12 @@
         <div class="hidden md:block">
           <Menubar :model="menuItems" class="border-0 bg-transparent p-0 menubar">
             <template #start>
-              <h1 class="text-2xl font-bold text-app-primary flex items-center">
-                <i class="pi pi-clock text-app-blue-600 mr-2"></i>
-                Time Tracker
-              </h1>
+              <NuxtLink to="/">
+                <h1 class="text-2xl font-bold text-app-primary flex items-center">
+                  <i class="pi pi-clock text-app-blue-600 mr-2"></i>
+                  Project Cronos
+                </h1>
+              </NuxtLink>
             </template>
             <template #end>
               <div class="flex items-center space-x-3">
@@ -100,7 +104,7 @@
           <!-- Navigation Items -->
           <div class="space-y-1">
             <button
-                @click="navigateAndClose('/')"
+                @click="navigateAndClose('/timesheet')"
                 class="w-full flex items-center p-3 text-left hover:bg-app-tertiary rounded-lg transition-colors"
             >
               <i class="pi pi-calendar text-app-blue-600 mr-3"></i>
@@ -250,6 +254,44 @@
         </div>
       </div>
     </Dialog>
+
+    <!-- Footer -->
+    <div class="bg-app-secondary border-t border-app-primary py-8">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex items-center space-x-4 mb-4 md:mb-0">
+            <i class="pi pi-clock text-2xl text-app-blue-600"></i>
+            <span class="text-lg font-semibold text-app-primary">Project Cronos</span>
+          </div>
+
+          <div class="flex items-center space-x-6">
+            <Button
+                label="GitHub"
+                icon="pi pi-github"
+                text
+                size="small"
+                severity="secondary"
+                @click="navigateTo('https://github.com/trashykoifish1/project-cronos', {external: true, open: {target: '_blank'}})"
+            />
+            <Button
+                label="Support"
+                icon="pi pi-question-circle"
+                text
+                size="small"
+                severity="secondary"
+                @click="navigateTo('https://github.com/trashykoifish1/project-cronos/issues', {external: true, open: {target: '_blank'}})"
+            />
+            <ThemeToggle variant="text"/>
+          </div>
+        </div>
+
+        <div class="text-center mt-6 pt-6 border-t border-app-primary">
+          <p class="text-app-secondary text-sm">
+            © {{new Date().getFullYear()}} Project Cronos. Built with ❤️ for productivity enthusiasts.
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -269,7 +311,7 @@ const menuItems = ref([
     label: 'Timesheet',
     icon: 'pi pi-calendar',
     command: () => {
-      navigateTo('/')
+      navigateTo('/timesheet')
     }
   },
   {

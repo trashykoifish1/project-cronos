@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backend: enhanced statistics endpoint
 - Frontend:
   - Implemented all "Reports" pages
+  - Added landing page
 
 ## [0.1.0-alpha] - 2025-06-10
 

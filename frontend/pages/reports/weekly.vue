@@ -616,6 +616,6 @@ onMounted(async () => {
 
 // Set page title
 useHead({
-  title: 'Weekly Summary - Time Tracker'
+  title: 'Weekly Summary - Project Cronos'
 })
 </script>

@@ -943,7 +943,7 @@ onUnmounted(() => {
 
 // Set page title
 useHead({
-  title: 'Daily Reports - Time Tracker'
+  title: 'Daily Reports - Project Cronos'
 })
 </script>
 

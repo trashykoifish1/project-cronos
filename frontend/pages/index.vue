@@ -1,568 +1,429 @@
 <template>
-  <!-- Main Content Area -->
-  <div class="flex flex-1 overflow-hidden relative">
-    <!-- Mobile Task Sidebar Overlay -->
-    <div
-        v-if="showMobileSidebar"
-        class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-        @click="showMobileSidebar = false"
-    >
-      <div
-          class="bg-app-secondary w-80 h-full shadow-xl transform transition-transform duration-300"
-          @click.stop
-      >
-        <!-- Mobile Sidebar Header -->
-        <div class="flex items-center justify-between p-4 border-b border-app-primary">
-          <h3 class="text-lg font-semibold text-app-primary">Select Task</h3>
-          <Button
-              icon="pi pi-times"
-              severity="secondary"
-              text
-              @click="showMobileSidebar = false"
-          />
-        </div>
+  <div class="min-h-screen bg-app-primary">
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden">
+      <!-- Background Decoration -->
+      <div class="absolute inset-0 opacity-50"
+           style="background: linear-gradient(135deg, rgb(var(--blue-50)), rgb(var(--purple-50)))"></div>
+      <div class="absolute top-0 left-0 w-64 h-64 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"
+           style="background-color: rgb(var(--blue-200))"></div>
+      <div class="absolute top-0 right-0 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"
+           style="background-color: rgb(var(--purple-200))"></div>
+      <div class="absolute -bottom-8 left-20 w-80 h-80 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"
+           style="background-color: rgb(var(--green-200))"></div>
 
-        <!-- Mobile Sidebar Content -->
-        <div class="h-full pb-16">
-          <TaskSidebar @task-selected="showMobileSidebar = false" />
+      <!-- Hero Content -->
+      <div class="relative px-6 py-16 lg:py-24">
+        <div class="max-w-6xl mx-auto text-center">
+          <!-- Welcome Message -->
+          <div class="mb-8">
+            <Chip
+                label="Welcome to Your Personal Time Tracker!"
+                class="mb-4 bg-app-blue-50 text-app-blue-700 border-app-blue-200"
+                icon="pi pi-heart"
+            />
+            <h1 class="text-4xl lg:text-6xl font-bold text-app-primary mb-6 leading-tight">
+              Master Your Time,<br>
+              <span class="text-app-blue-600">Boost Your Productivity</span>
+            </h1>
+            <p class="text-xl lg:text-2xl text-app-secondary max-w-3xl mx-auto leading-relaxed">
+              Thank you for choosing our time tracking open-source project! We hope this would boost your productivity in some way. Best of wishes!
+            </p>
+          </div>
+
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <Button
+                label="Start Tracking Time"
+                icon="pi pi-play"
+                size="large"
+                @click="navigateTo('/timesheet')"
+                class="px-8 py-3"
+            />
+            <Button
+                label="View Reports"
+                icon="pi pi-chart-bar"
+                size="large"
+                severity="secondary"
+                outlined
+                @click="navigateTo('/reports/daily')"
+                class="px-8 py-3"
+            />
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <Card class="text-center hover:shadow-lg transition-shadow duration-300">
+              <template #content>
+                <div class="py-4">
+                  <i class="pi pi-clock text-3xl text-app-blue-600 mb-3"></i>
+                  <h3 class="text-lg font-semibold text-app-primary mb-2">Smart Time Tracking</h3>
+                  <p class="text-app-secondary text-sm">
+                    Drag-and-paint interface makes logging time entries effortless and intuitive
+                  </p>
+                </div>
+              </template>
+            </Card>
+
+            <Card class="text-center hover:shadow-lg transition-shadow duration-300">
+              <template #content>
+                <div class="py-4">
+                  <i class="pi pi-chart-line text-3xl text-app-green-600 mb-3"></i>
+                  <h3 class="text-lg font-semibold text-app-primary mb-2">Insightful Analytics</h3>
+                  <p class="text-app-secondary text-sm">
+                    Daily, weekly, and monthly reports with beautiful charts and productivity insights
+                  </p>
+                </div>
+              </template>
+            </Card>
+
+            <Card class="text-center hover:shadow-lg transition-shadow duration-300">
+              <template #content>
+                <div class="py-4">
+                  <i class="pi pi-download text-3xl text-app-purple-600 mb-3"></i>
+                  <h3 class="text-lg font-semibold text-app-primary mb-2">Easy Export</h3>
+                  <p class="text-app-secondary text-sm">
+                    Export your data to CSV for reports, invoicing, or integration with other tools
+                  </p>
+                </div>
+              </template>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Desktop Task Sidebar -->
-    <div class="hidden lg:block w-80 flex-shrink-0 bg-primary border-r border-primary">
-      <TaskSidebar />
-    </div>
-
-    <!-- Timesheet Area -->
-    <div class="flex-1 flex flex-col min-w-0">
-      <!-- Current Day Header -->
-      <div class="bg-app-secondary border-b border-app-primary p-4 lg:p-6">
-        <!-- Mobile Header -->
-        <div class="lg:hidden">
-          <!-- Mobile Top Row: Task Button + Date -->
-          <div class="flex items-center justify-between mb-3">
-            <Button
-                @click="showMobileSidebar = true"
-                icon="pi pi-bookmark"
-                label="Tasks"
-                severity="info"
-                class="flex-shrink-0"
-            />
-
-            <div class="flex items-center space-x-1 flex-1 justify-center">
-              <Button
-                  icon="pi pi-chevron-left"
-                  severity="secondary"
-                  text
-                  @click="previousDay"
-                  class="w-10 h-10"
-              />
-
-              <DatePicker
-                  v-model="selectedDate"
-                  @date-select="onDateChange"
-                  showIcon
-                  dateFormat="M dd, yy"
-                  placeholder="Select Date"
-                  class="w-32 text-center"
-                  inputClass="text-sm text-center"
-              />
-
-              <Button
-                  icon="pi pi-chevron-right"
-                  severity="secondary"
-                  text
-                  @click="nextDay"
-                  class="w-10 h-10"
-              />
-            </div>
-
-            <Button
-                @click="showMobileActions = !showMobileActions"
-                icon="pi pi-ellipsis-v"
-                severity="secondary"
-                text
-                class="w-10 h-10"
-            />
-          </div>
-
-          <!-- Mobile Actions Panel -->
-          <div v-if="showMobileActions" class="bg-app-primary rounded-lg p-3 mb-3">
-            <div class="grid grid-cols-3 gap-2">
-              <Button
-                  @click="showQuickAdd = true; showMobileActions = false"
-                  label="Add"
-                  icon="pi pi-plus"
-                  size="small"
-                  severity="info"
-                  class="text-xs"
-              />
-              <Button
-                  @click="exportToday; showMobileActions = false"
-                  label="Export"
-                  icon="pi pi-download"
-                  size="small"
-                  severity="secondary"
-                  class="text-xs"
-              />
-              <Button
-                  @click="refreshTimesheet; showMobileActions = false"
-                  icon="pi pi-refresh"
-                  size="small"
-                  severity="secondary"
-                  :loading="timesheetStore.loading"
-                  class="text-xs"
-              />
-            </div>
-          </div>
-
-          <p class="text-app-secondary text-sm text-center">
-            Tap Tasks to select, then paint time slots
+    <!-- Features Section -->
+    <div class="py-16 lg:py-24 bg-app-secondary">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl lg:text-4xl font-bold text-app-primary mb-4">
+            Everything You Need to Track Time Effectively
+          </h2>
+          <p class="text-lg text-app-secondary max-w-2xl mx-auto">
+            Our comprehensive time tracking solution helps you understand where your time goes
+            and optimize your productivity with features designed as a solution to a real-world problem.
           </p>
         </div>
 
-        <!-- Desktop Header -->
-        <div class="hidden lg:block">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="pt-2 space-x-2">
-                <Button
-                    icon="pi pi-chevron-left"
-                    size="large"
-                    severity="secondary"
-                    @click="previousDay"
-                    v-tooltip="'Previous Day'"
-                    class="w-8 h-12"
-                    variant="text"
-                />
-
-                <DatePicker
-                    v-model="selectedDate"
-                    @date-select="onDateChange"
-                    showIcon
-                    :showButtonBar="true"
-                    dateFormat="DD, MM dth, yy"
-                    placeholder="Select Date"
-                    size="large"
-                    input-class="font-semibold"
-                />
-
-                <Button
-                    icon="pi pi-chevron-right"
-                    size="large"
-                    severity="secondary"
-                    @click="nextDay"
-                    v-tooltip="'Next Day'"
-                    class="w-8 h-12"
-                    variant="text"
-                />
+        <!-- Feature Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+          <!-- Timesheet Feature -->
+          <Card class="hover:shadow-lg transition-shadow duration-300">
+            <template #content>
+              <div class="flex items-start space-x-4 p-6">
+                <div class="bg-app-blue-50 p-3 rounded-lg">
+                  <i class="pi pi-calendar text-2xl text-app-blue-600"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-semibold text-app-primary mb-3">Interactive Timesheet</h3>
+                  <p class="text-app-secondary mb-4">
+                    Visual drag-and-paint interface with 15-minute precision. Click and drag to create
+                    time entries, with real-time overlap detection and automatic validation.
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    <Tag severity="info" value="15-min precision" />
+                    <Tag severity="success" value="Overlap detection" />
+                    <Tag severity="secondary" value="Auto-save" />
+                  </div>
+                </div>
               </div>
-              <p class="text-app-secondary mt-1">
-                Track your time by selecting a task and painting time slots
-              </p>
-            </div>
+            </template>
+          </Card>
 
-            <!-- Desktop Quick Actions -->
-            <div class="flex items-center space-x-3">
-              <Button
-                  @click="showQuickAdd = true"
-                  label="Quick Add"
-                  icon="pi pi-plus"
-                  size="small"
-                  severity="info"
-              />
-              <Button
-                  @click="exportToday"
-                  label="Export"
-                  icon="pi pi-download"
-                  size="small"
-                  severity="secondary"
-              />
-              <Button
-                  @click="refreshTimesheet"
-                  icon="pi pi-refresh"
-                  size="small"
-                  severity="secondary"
-                  :loading="timesheetStore.loading"
-                  v-tooltip="'Refresh'"
-              />
-            </div>
-          </div>
+          <!-- Categories & Tasks Feature -->
+          <Card class="hover:shadow-lg transition-shadow duration-300">
+            <template #content>
+              <div class="flex items-start space-x-4 p-6">
+                <div class="bg-app-green-50 p-3 rounded-lg">
+                  <i class="pi pi-tags text-2xl text-app-green-600"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-semibold text-app-primary mb-3">Smart Organization</h3>
+                  <p class="text-app-secondary mb-4">
+                    Organize your work with custom categories and color-coded tasks. Hierarchical
+                    structure helps you maintain clarity and consistency in your time tracking.
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    <Tag severity="success" value="Custom categories" />
+                    <Tag severity="info" value="Color coding" />
+                    <Tag severity="secondary" value="Hierarchical" />
+                  </div>
+                </div>
+              </div>
+            </template>
+          </Card>
+
+          <!-- Reports Feature -->
+          <Card class="hover:shadow-lg transition-shadow duration-300">
+            <template #content>
+              <div class="flex items-start space-x-4 p-6">
+                <div class="bg-app-purple-50 p-3 rounded-lg">
+                  <i class="pi pi-chart-bar text-2xl text-app-purple-600"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-semibold text-app-primary mb-3">Comprehensive Reports</h3>
+                  <p class="text-app-secondary mb-4">
+                    Daily summaries, weekly overviews, monthly insights, and flexible statistics.
+                    Beautiful charts and actionable insights help you understand your productivity patterns.
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    <Tag severity="info" value="Multiple timeframes" />
+                    <Tag severity="success" value="Visual charts" />
+                    <Tag severity="secondary" value="Insights" />
+                  </div>
+                </div>
+              </div>
+            </template>
+          </Card>
+
+          <!-- Export Feature -->
+          <Card class="hover:shadow-lg transition-shadow duration-300">
+            <template #content>
+              <div class="flex items-start space-x-4 p-6">
+                <div class="bg-app-orange-50 p-3 rounded-lg">
+                  <i class="pi pi-download text-2xl text-app-orange-600"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-semibold text-app-primary mb-3">Flexible Export</h3>
+                  <p class="text-app-secondary mb-4">
+                    Export your time data to CSV format for integration with invoicing tools,
+                    spreadsheets, or other applications. Multiple export formats available.
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    <Tag severity="info" value="CSV export" />
+                    <Tag severity="success" value="Multiple formats" />
+                    <Tag severity="secondary" value="Easy integration" />
+                  </div>
+                </div>
+              </div>
+            </template>
+          </Card>
         </div>
 
-          <!-- Daily Statistics -->
-        <div class="mt-4 lg:mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          <div class="bg-app-blue-50 rounded-lg p-3 lg:p-4 text-center">
-            <div class="text-lg lg:text-2xl font-bold text-app-blue-600">
-              {{ formatDuration(timesheetStore.totalTrackedMinutes) }}
-            </div>
-            <div class="text-xs lg:text-sm text-app-blue-800">Total Tracked</div>
-          </div>
+        <!-- Quick Start Guide -->
+        <Card class="bg-gradient-to-r from-app-blue-50 to-app-purple-50">
+          <template #content>
+            <div class="p-8">
+              <div class="text-center mb-8">
+                <h3 class="text-2xl font-bold text-app-primary mb-2">Get Started in 3 Simple Steps</h3>
+                <p class="text-app-secondary">Start tracking your time in less than 2 minutes</p>
+              </div>
 
-          <div class="bg-app-green-50 rounded-lg p-3 lg:p-4 text-center">
-            <div class="text-lg lg:text-2xl font-bold text-app-green-600">
-              {{ timesheetStore.timeEntries.length }}
-            </div>
-            <div class="text-xs lg:text-sm text-app-green-800">Time Entries</div>
-          </div>
-
-          <div class="bg-app-purple-50 rounded-lg p-3 lg:p-4 text-center">
-            <div class="text-lg lg:text-2xl font-bold text-app-purple-600">
-              {{ uniqueTasksCount }}
-            </div>
-            <div class="text-xs lg:text-sm text-app-purple-800">Tasks Used</div>
-          </div>
-
-          <div class="bg-app-orange-50 rounded-lg p-3 lg:p-4 text-center">
-            <div class="text-lg lg:text-2xl font-bold text-app-orange-600">
-              {{ completionPercentage }}%
-            </div>
-            <div class="text-xs lg:text-sm text-app-orange-800">Day Progress</div>
-          </div>
-        </div>
-
-        <!-- Timesheet Grid -->
-        <div class="flex-1 overflow-auto p-2 lg:p-6">
-          <div class="bg-app-secondary rounded-lg border border-app-primary p-2 lg:p-4">
-            <TimesheetGrid />
-          </div>
-        </div>
-
-        <!-- Time Breakdown Footer -->
-        <div class="bg-app-secondary border-t border-app-gray-primary p-2 lg:p-4">
-          <div class="block lg:flex lg:items-center lg:justify-between">
-            <!-- Time Breakdown by Task -->
-            <div class="mb-3 lg:mb-0">
-              <span class="text-sm font-medium text-app-primary block lg:inline">Today's Breakdown:</span>
-              <div class="flex items-center space-x-2 lg:space-x-4 flex-wrap mt-2 lg:mt-0 lg:ml-4">
-                <div
-                    v-for="(breakdown, taskId) in timeBreakdown"
-                    :key="taskId"
-                    class="flex items-center space-x-1 lg:space-x-2 px-2 lg:px-3 py-1 bg-app-primary rounded-full"
-                >
-                  <div
-                      class="w-2 h-2 lg:w-3 lg:h-3 rounded-full"
-                      :style="{ backgroundColor: breakdown.color }"
-                  ></div>
-                  <span class="text-xs lg:text-sm font-medium text-app-primary truncate max-w-20 lg:max-w-none">
-            {{ breakdown.taskTitle }}
-          </span>
-                  <span class="text-xs lg:text-sm text-app-secondary">
-            {{ formatDuration(breakdown.minutes) }}
-          </span>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                  <div class="bg-app-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                    1
+                  </div>
+                  <h4 class="font-semibold text-app-primary mb-2">Create Categories</h4>
+                  <p class="text-app-secondary text-sm">Set up work categories like "Development", "Meetings", or "Admin"</p>
                 </div>
 
-                <div v-if="Object.keys(timeBreakdown).length === 0" class="text-xs lg:text-sm text-app-secondary">
-                  No time entries yet - start by selecting a task and painting time slots!
+                <div class="text-center">
+                  <div class="bg-app-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                    2
+                  </div>
+                  <h4 class="font-semibold text-app-primary mb-2">Add Tasks</h4>
+                  <p class="text-app-secondary text-sm">Create specific tasks within each category with custom colors</p>
+                </div>
+
+                <div class="text-center">
+                  <div class="bg-app-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                    3
+                  </div>
+                  <h4 class="font-semibold text-app-primary mb-2">Track Time</h4>
+                  <p class="text-app-secondary text-sm">Drag and paint on the timesheet to log your time entries</p>
                 </div>
               </div>
             </div>
+          </template>
+        </Card>
+      </div>
+    </div>
 
-            <!-- Action Buttons -->
-            <div class="flex items-center justify-center lg:justify-end">
-              <Button
-                  @click="clearDay"
-                  label="Clear Day"
-                  icon="pi pi-trash"
-                  size="small"
-                  severity="danger"
-                  :disabled="timesheetStore.timeEntries.length === 0"
-                  class="text-xs lg:text-sm"
-              />
-            </div>
+    <!-- Thank You Section -->
+    <div class="py-16 lg:py-24 bg-app-primary">
+      <div class="max-w-4xl mx-auto text-center px-6">
+        <div class="mb-8">
+          <i class="pi pi-heart text-5xl text-app-red-600 mb-6"></i>
+          <h2 class="text-3xl lg:text-4xl font-bold text-app-primary mb-6">
+            Thank You for Choosing Us!
+          </h2>
+          <p class="text-lg text-app-secondary mb-8 max-w-2xl mx-auto">
+            We're honored that you've chosen our time tracking application to help manage your productivity.
+            Your time is valuable, and we're committed to helping you make the most of it.
+          </p>
+        </div>
+
+        <!-- Final CTA -->
+        <div class="mt-12">
+          <h3 class="text-xl font-semibold text-app-primary mb-4">Ready to start tracking?</h3>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+                label="Open Timesheet"
+                icon="pi pi-calendar"
+                size="large"
+                @click="navigateTo('/timesheet')"
+                class="px-8"
+            />
+            <Button
+                label="Explore Reports"
+                icon="pi pi-chart-line"
+                size="large"
+                severity="secondary"
+                outlined
+                @click="navigateTo('/reports/daily')"
+                class="px-8"
+            />
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Dialogs and Overlays -->
-
-    <!-- Quick Add Time Entry Dialog -->
-    <Dialog
-        v-model:visible="showQuickAdd"
-        modal
-        header="Quick Add Time Entry"
-        :style="{ width: '500px' }"
-    >
-      <div class="space-y-4">
-        <div class="text-sm text-app-secondary">
-          Quickly add a time entry for today without using the timesheet grid.
-        </div>
-        <!-- Quick add form would go here -->
-        <div class="text-center py-8 text-app-secondary">
-          <i class="pi pi-clock text-3xl mb-2"></i>
-          <div>Quick add functionality coming soon!</div>
-        </div>
-      </div>
-
-      <template #footer>
-        <Button label="Cancel" severity="secondary" @click="showQuickAdd = false" />
-        <Button label="Add Entry" @click="showQuickAdd = false" disabled />
-      </template>
-    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { format, addDays, subDays } from 'date-fns'
-
-// Stores
-const timesheetStore = useTimesheetStore()
-const tasksStore = useTasksStore()
+// Page setup
+definePageMeta({
+  layout: 'default'
+})
 
 // Composables
 const toast = useToast()
-const confirm = useConfirm()
-const { formatDuration, getCurrentDate } = useTime()
-
-// Reactive state
-const selectedDate = ref(new Date())
-const showQuickAdd = ref(false)
-const showMobileSidebar = ref(false)
-const showMobileActions = ref(false)
-
-// Computed properties
-const timeBreakdown = computed(() => timesheetStore.timeBreakdownByTask)
-
-const uniqueTasksCount = computed(() => {
-  const taskIds = new Set(timesheetStore.timeEntries.map(entry => entry.taskId))
-  return taskIds.size
-})
-
-const completionPercentage = computed(() => {
-  const totalMinutes = timesheetStore.totalTrackedMinutes
-  const workingHours = 8 // 8 hour work day
-  const totalWorkMinutes = workingHours * 60
-  return Math.min(Math.round((totalMinutes / totalWorkMinutes) * 100), 100)
-})
 
 // Methods
-const formatDateLong = (date: Date) => {
-  return format(date, 'EEEE, MMMM do, yyyy')
-}
-
-const onDateChange = async (event: any) => {
-  selectedDate.value = event
-  const dateString = format(event, 'yyyy-MM-dd')
-  await timesheetStore.setCurrentDate(dateString)
-}
-
-const previousDay = async () => {
-  const newDate = subDays(selectedDate.value, 1)
-  selectedDate.value = newDate
-  await onDateChange(newDate)
-}
-
-const nextDay = async () => {
-  const newDate = addDays(selectedDate.value, 1)
-  selectedDate.value = newDate
-  await onDateChange(newDate)
-}
-
-const goToToday = async () => {
-  const today = new Date()
-  selectedDate.value = today
-  await onDateChange(today)
-}
-
-const refreshTimesheet = async () => {
-  await timesheetStore.fetchTimeEntriesForDate()
-
-  if (!timesheetStore.error) {
-    toast.add({
-      severity: 'success',
-      summary: 'Refreshed',
-      detail: 'Timesheet data has been refreshed',
-      life: 2000
-    })
-  }
-}
-
-const exportToday = () => {
-  const dateString = format(selectedDate.value, 'yyyy-MM-dd')
-  const csvData = timesheetStore.timeEntries
-      .filter(entry => entry.entryDate === dateString)
-      .map(entry => ({
-        Date: entry.entryDate,
-        Task: entry.taskTitle,
-        Category: entry.categoryTitle,
-        'Start Time': entry.startTime,
-        'End Time': entry.endTime,
-        'Duration (minutes)': entry.durationMinutes,
-        'Duration (formatted)': formatDuration(entry.durationMinutes),
-        Description: entry.description || ''
-      }))
-
-  if (csvData.length === 0) {
-    toast.add({
-      severity: 'warn',
-      summary: 'No Data',
-      detail: 'No time entries to export for this date',
-      life: 3000
-    })
-    return
-  }
-
-  const csvContent = [
-    Object.keys(csvData[0]).join(','),
-    ...csvData.map(row => Object.values(row).map(val => `"${val}"`).join(','))
-  ].join('\n')
-
-  const blob = new Blob([csvContent], { type: 'text/csv' })
-  const url = window.URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `timesheet-${dateString}.csv`
-  link.click()
-  window.URL.revokeObjectURL(url)
-
-  toast.add({
-    severity: 'success',
-    summary: 'Export Complete',
-    detail: `Exported ${csvData.length} time entries`,
-    life: 3000
-  })
-}
-
-const clearDay = () => {
-  const entriesForDay = timesheetStore.timeEntries.filter(
-      entry => entry.entryDate === format(selectedDate.value, 'yyyy-MM-dd')
-  )
-
-  if (entriesForDay.length === 0) {
-    toast.add({
-      severity: 'info',
-      summary: 'Nothing to Clear',
-      detail: 'No time entries found for this date',
-      life: 2000
-    })
-    return
-  }
-
-  confirm.require({
-    message: `Are you sure you want to delete all ${entriesForDay.length} time entries for ${formatDateLong(selectedDate.value)}?\n\nThis action cannot be undone.`,
-    header: 'Clear All Time Entries',
-    icon: 'pi pi-exclamation-triangle',
-    rejectProps: {
-      label: 'Cancel',
-      severity: 'secondary',
-      outlined: true
-    },
-    acceptProps: {
-      label: 'Clear All',
-      severity: 'danger'
-    },
-    accept: async () => {
-      try {
-        const deletePromises = entriesForDay.map(entry =>
-            timesheetStore.deleteTimeEntry(entry.id)
-        )
-        await Promise.all(deletePromises)
-
-        toast.add({
-          severity: 'success',
-          summary: 'Day Cleared',
-          detail: `Deleted ${entriesForDay.length} time entries`,
-          life: 3000
-        })
-      } catch (error: any) {
-        toast.add({
-          severity: 'error',
-          summary: 'Clear Failed',
-          detail: error.message || 'Failed to clear time entries',
-          life: 5000
-        })
-      }
-    }
-  })
-}
-
-const showPlaceholder = (feature: string) => {
+const showDocumentation = () => {
   toast.add({
     severity: 'info',
-    summary: 'Coming Soon',
-    detail: `${feature} functionality will be available in a future update`,
+    summary: 'Documentation',
+    detail: 'Documentation features coming soon!',
     life: 3000
   })
 }
 
-// Keyboard shortcuts
-const handleKeydown = (event: KeyboardEvent) => {
-  if (event.target && (event.target as HTMLElement).tagName === 'INPUT') {
-    return
-  }
-
-  switch (event.key) {
-    case 'ArrowLeft':
-      if (event.altKey) {
-        event.preventDefault()
-        previousDay()
-      }
-      break
-    case 'ArrowRight':
-      if (event.altKey) {
-        event.preventDefault()
-        nextDay()
-      }
-      break
-    case 't':
-    case 'T':
-      if (event.ctrlKey || event.metaKey) {
-        event.preventDefault()
-        goToToday()
-      }
-      break
-  }
+const showSupport = () => {
+  toast.add({
+    severity: 'info',
+    summary: 'Support',
+    detail: 'Support system coming soon!',
+    life: 3000
+  })
 }
 
-// Initialize
-onMounted(async () => {
-  selectedDate.value = new Date()
-  await timesheetStore.setCurrentDate(format(new Date(), "yyyy-MM-dd"))
+// Performance optimization for theme changes
+const { isDark } = useTheme()
 
-  // Initialize timesheet
-  timesheetStore.initializeTimeSlots()
+// Debounce expensive operations during theme transitions
+let isTransitioning = false
 
-  // Load data
-  await Promise.all([
-    tasksStore.fetchTasks(),
-    timesheetStore.fetchTimeEntriesForDate()
-  ])
+watch(isDark, () => {
+  if (isTransitioning) return
 
-  // Add keyboard listeners
-  document.addEventListener('keydown', handleKeydown)
-})
+  isTransitioning = true
 
-onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeydown)
-})
-
-// Set page title
-useHead({
-  title: 'Time Tracker - Visual Time Tracking'
+  // Allow theme transition to complete before re-enabling animations
+  setTimeout(() => {
+    isTransitioning = false
+  }, 200)
 })
 </script>
 
 <style scoped>
-/* Component-specific styles */
-
-/* Custom scrollbar for timesheet area */
-.overflow-auto::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* Blob animation for background elements */
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
 }
 
-.overflow-auto::-webkit-scrollbar-track {
-  background: #f1f5f9;
+.animate-blob {
+  animation: blob 7s infinite;
+  /* Disable transitions on animated elements to prevent conflicts */
+  transition: none !important;
 }
 
-.overflow-auto::-webkit-scrollbar-thumb {
-  background: #94a3b8;
-  border-radius: 4px;
+.animation-delay-2000 {
+  animation-delay: 2s;
 }
 
-.overflow-auto::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Optimized theme transitions - only apply to specific properties */
+.bg-app-primary,
+.bg-app-secondary,
+.text-app-primary,
+.text-app-secondary {
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+/* Card hover effects with optimized transitions */
+.hover\:shadow-lg {
+  transition: box-shadow 0.2s ease-out;
+}
+
+.hover\:shadow-lg:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Optimized gradient backgrounds */
+.bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, rgb(var(--blue-50)), rgb(var(--purple-50)));
+  transition: none; /* Remove transition from gradients for better performance */
+}
+
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, rgb(var(--blue-50)), rgb(var(--purple-50)));
+  transition: none; /* Remove transition from gradients for better performance */
+}
+
+/* Specific theme-aware elements with controlled transitions */
+:deep(.p-card) {
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out;
+}
+
+:deep(.p-button) {
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+:deep(.p-chip) {
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+:deep(.p-tag) {
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .animate-blob {
+    animation: none;
+  }
+
+  * {
+    transition: none !important;
+  }
+}
+
+/* Performance optimization: Use transform3d for hardware acceleration */
+.animate-blob {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+/* Optimize background decorations */
+.absolute {
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 </style>
