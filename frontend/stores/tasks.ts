@@ -59,8 +59,8 @@ export const useTasksStore = defineStore('tasks', {
             this.error = null
 
             try {
-                const { getActiveTasks } = useTasksApi()
-                this.tasks = await getActiveTasks()
+                const { getTasks } = useTasksApi()
+                this.tasks = await getTasks()
 
                 // Clear selection if the selected task is no longer available
                 if (this.selectedTask) {
@@ -132,6 +132,25 @@ export const useTasksStore = defineStore('tasks', {
                 return updatedTask
             } catch (error: any) {
                 this.error = error.message || 'Failed to archive task'
+                throw error
+            }
+        },
+
+        // Move task to different category
+        async moveTaskToCategory(taskId: number, newCategoryId: number) {
+            try {
+                const { moveTaskToCategory } = useTasksApi()
+                const updatedTask = await moveTaskToCategory(taskId, newCategoryId)
+
+                // Update local state
+                const index = this.tasks.findIndex(task => task.id === taskId)
+                if (index !== -1) {
+                    this.tasks[index] = updatedTask
+                }
+
+                return updatedTask
+            } catch (error: any) {
+                this.error = error.message || 'Failed to move task'
                 throw error
             }
         },

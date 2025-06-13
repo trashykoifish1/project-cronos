@@ -166,11 +166,13 @@ import type { Task, TaskCreateRequest, TaskUpdateRequest } from '~/types/api'
 interface Props {
   task?: Task | null
   loading?: boolean
+  passedCategoryId?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   task: null,
-  loading: false
+  loading: false,
+  passedCategoryId: undefined
 })
 
 // Emits
@@ -316,7 +318,9 @@ const initializeForm = () => {
   } else {
     // Creating new task
     formData.title = ''
-    formData.categoryId = null
+    if (props.passedCategoryId !== undefined) {
+      formData.categoryId = props.passedCategoryId;
+    } else formData.categoryId = null;
     formData.description = ''
     formData.color = getRandomHexColor()
     formData.icon = ''

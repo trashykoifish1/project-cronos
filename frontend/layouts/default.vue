@@ -149,15 +149,6 @@
               </div>
             </div>
 
-            <!-- Export -->
-            <button
-                @click="showPlaceholder('Export'); showMobileMenu = false"
-                class="w-full flex items-center p-3 text-left hover:bg-app-tertiary rounded-lg transition-colors"
-            >
-              <i class="pi pi-download text-app-green-600 mr-3"></i>
-              <span class="font-medium">Export</span>
-            </button>
-
             <!-- Manage -->
             <button
                 @click="showPlaceholder('Manage'); showMobileMenu = false"
@@ -341,32 +332,6 @@ const menuItems = ref([
     ]
   },
   {
-    label: 'Export',
-    icon: 'pi pi-download',
-    items: [
-      {
-        label: 'Export Today',
-        icon: 'pi pi-file',
-        command: () => showPlaceholder('Export Today')
-      },
-      {
-        label: 'Export Week',
-        icon: 'pi pi-calendar',
-        command: () => showPlaceholder('Export Week')
-      },
-      {
-        label: 'Export Month',
-        icon: 'pi pi-calendar',
-        command: () => showPlaceholder('Export Month')
-      },
-      {
-        label: 'Custom Range',
-        icon: 'pi pi-filter',
-        command: () => showPlaceholder('Custom Export Range')
-      }
-    ]
-  },
-  {
     label: 'Manage',
     icon: 'pi pi-cog',
     items: [
@@ -379,11 +344,6 @@ const menuItems = ref([
         label: 'Tasks',
         icon: 'pi pi-bookmark',
         command: () => navigateTo('/manage/tasks')
-      },
-      {
-        label: 'Archive',
-        icon: 'pi pi-book',
-        command: () => navigateTo('/manage/archive')
       }
     ]
   }

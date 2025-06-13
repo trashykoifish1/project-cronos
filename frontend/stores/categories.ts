@@ -77,6 +77,23 @@ export const useCategoriesStore = defineStore('categories', {
             }
         },
 
+        async deleteCategory(id: number) {
+            try {
+                const { deleteCategory } = useCategoriesApi()
+                await deleteCategory(id)
+
+                const index = this.categories.findIndex(cat => cat.id === id)
+                if (index !== -1) {
+                    this.categories = this.categories.filter(category => category.id !== id)
+                }
+
+                return true;
+            } catch (error: any) {
+                this.error = error.message || 'Failed to update category'
+                throw error
+            }
+        },
+
         clearError() {
             this.error = null
         },

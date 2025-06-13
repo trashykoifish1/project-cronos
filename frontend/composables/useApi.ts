@@ -78,6 +78,10 @@ export const useTasksApi = () => {
     const { apiCall } = useApi()
 
     return {
+        // Get all tasks for user
+        getTasks: () =>
+            apiCall<Task[]>('/tasks'),
+
         // Get all active tasks for user
         getActiveTasks: () =>
             apiCall<Task[]>('/tasks/active'),
@@ -99,6 +103,12 @@ export const useTasksApi = () => {
             apiCall<Task>(`/tasks/${id}/archive`, {
                 method: 'PATCH',
                 query: { archived }
+            }),
+
+        // Move task to category
+        moveTaskToCategory: (taskId: number, newCategoryId: number) =>
+            apiCall<Task>(`/tasks/${taskId}/move-to-category/${newCategoryId}`, {
+                method: 'PUT'
             }),
 
         // Delete task
@@ -125,7 +135,11 @@ export const useCategoriesApi = () => {
 
         // Update category
         updateCategory: (id: number, data: CategoryUpdateRequest) =>
-            apiCall<Category>(`/categories/${id}`, { method: 'PUT', body: data })
+            apiCall<Category>(`/categories/${id}`, { method: 'PUT', body: data }),
+
+        // Update category
+        deleteCategory: (id: number) =>
+            apiCall<Category>(`/categories/${id}`, { method: 'DELETE' })
     }
 }
 
