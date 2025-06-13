@@ -187,3 +187,55 @@ export interface WeeklySummary {
     averageDailyHours: number
     dailySummaries: DailySummary[]
 }
+
+export interface CategoryBreakdown {
+    categoryId: number
+    categoryTitle: string
+    color: string
+    totalMinutes: number
+    timeFormatted: string
+    entryCount: number
+}
+
+export interface TaskBreakdown {
+    taskId: number
+    taskTitle: string
+    taskColor: string
+    categoryTitle: string
+    totalMinutes: number
+    timeFormatted: string
+    entryCount: number
+}
+
+export interface MonthlyStatistics {
+    totalMinutes: number
+    totalEntries: number
+    daysTracked: number
+    averageDailyHours: number
+    categoryBreakdown: CategoryBreakdown[]
+    taskBreakdown: TaskBreakdown[]
+    weekdayMinutes: number
+    weekendMinutes: number
+    averageSession: number
+    longestSession: number
+}
+
+export interface MonthlyInsights {
+    mostProductiveDay?: {
+        date: string
+        minutes: number
+        timeFormatted: string
+    }
+    topTasksByAvgSession?: Record<string, number>
+    taskVarietyScore?: number
+}
+
+export interface MonthlyReport {
+    year: number
+    month: number
+    startDate: string
+    endDate: string
+    statistics: MonthlyStatistics
+    insights: MonthlyInsights
+    monthName: string
+}

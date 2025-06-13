@@ -12,7 +12,8 @@ import type {
     TimeEntryCreateRequest,
     TimeEntryUpdateRequest,
     BulkTimeEntryRequest,
-    WeeklySummary
+    WeeklySummary,
+    MonthlyStatistics
 } from '~/types/api'
 
 export const useApi = () => {
@@ -183,6 +184,11 @@ export const useReportsApi = () => {
         // Get statistics for date range
         getStatistics: (startDate: string, endDate: string) =>
             apiCall<any>('/reports/statistics', {
+                query: { startDate, endDate }
+            }),
+
+        getEnhancedStatistics: (startDate: string, endDate: string) =>
+            apiCall<MonthlyStatistics>('/reports/enhanced-statistics', {
                 query: { startDate, endDate }
             }),
 

@@ -228,6 +228,7 @@ export const useTimesheetStore = defineStore('timesheet', {
                 const reportsStore = useReportsStore()
                 reportsStore.invalidateDaily(this.currentDate)
                 reportsStore.invalidateWeekly(this.currentDate)
+                reportsStore.invalidateMonthly(this.currentDate)
 
                 return newEntry
             } catch (error) {
@@ -266,6 +267,7 @@ export const useTimesheetStore = defineStore('timesheet', {
                 const reportsStore = useReportsStore()
                 reportsStore.invalidateDaily(this.currentDate)
                 reportsStore.invalidateWeekly(this.currentDate)
+                reportsStore.invalidateMonthly(this.currentDate)
 
                 return true
             } catch (error: any) {

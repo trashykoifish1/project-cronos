@@ -40,8 +40,8 @@
           <Button
               label="This Week"
               size="small"
+              severity="secondary"
               @click="goToCurrentWeek"
-              outlined
           />
 
           <Button

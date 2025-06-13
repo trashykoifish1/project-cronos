@@ -1,6 +1,6 @@
 {
   "name": "timetracker-frontend",
-  "version": "1.0.0",
+  "version": "0.2.0-alpha",
   "description": "Frontend for Time Tracker Application",
   "private": true,
   "scripts": {

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { format } from 'date-fns'
-import type { DailySummary, WeeklySummary } from '~/types/api'
+import type { DailySummary, WeeklySummary, MonthlyReport } from '~/types/api'
 import {useReportsApi} from "~/composables/useApi";
 
 export const useReportsStore = defineStore('reports', {
@@ -13,6 +13,10 @@ export const useReportsStore = defineStore('reports', {
         weeklyReports: {} as Record<string, WeeklySummary>, // week key -> WeeklySummary
         currentWeeklyReport: null as WeeklySummary | null,
 
+        // Monthly Reports
+        monthlyReports: {} as Record<string, MonthlyReport>, // month key -> monthly data
+        currentMonthlyReport: null as MonthlyReport | null,
+
         // Statistics
         statistics: null as any,
 
@@ -20,6 +24,7 @@ export const useReportsStore = defineStore('reports', {
         loadingDaily: false,
         loadingWeekly: false,
         loadingStatistics: false,
+        loadingMonthly: false,
 
         // Errors
         error: null as string | null
@@ -126,8 +131,8 @@ export const useReportsStore = defineStore('reports', {
             this.error = null
 
             try {
-                const { getStatistics } = useReportsApi()
-                const stats = await getStatistics(startDate, endDate)
+                const { getEnhancedStatistics } = useReportsApi()
+                const stats = await getEnhancedStatistics(startDate, endDate)
 
                 this.statistics = stats
                 return stats
@@ -137,6 +142,65 @@ export const useReportsStore = defineStore('reports', {
                 throw error
             } finally {
                 this.loadingStatistics = false
+            }
+        },
+
+        // Get month key for caching
+        getMonthKey(date: string) {
+            const d = new Date(date)
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+        },
+
+        // Fetch monthly statistics
+        async fetchMonthlyReport(year: number, month: number) {
+            const monthKey = `${year}-${String(month).padStart(2, '0')}`
+
+            // Return cached if available
+            if (this.monthlyReports[monthKey]) {
+                this.currentMonthlyReport = this.monthlyReports[monthKey]
+                return this.currentMonthlyReport
+            }
+
+            this.loadingMonthly = true
+            this.error = null
+
+            try {
+                // Calculate month range
+                const startDate = new Date(year, month - 1, 1)
+                const endDate = new Date(year, month, 0) // Last day of month
+
+                const startDateString = format(startDate, 'yyyy-MM-dd')
+                const endDateString = format(endDate, 'yyyy-MM-dd')
+
+                const { getStatistics, getProductivityInsights, getEnhancedStatistics } = useReportsApi()
+
+                // Fetch both statistics and insights
+                const [statistics, insights] = await Promise.all([
+                    getEnhancedStatistics ? getEnhancedStatistics(startDateString, endDateString) : getStatistics(startDateString, endDateString),
+                    getProductivityInsights(startDateString, endDateString)
+                ])
+
+                const monthlyData = {
+                    year,
+                    month,
+                    startDate: startDateString,
+                    endDate: endDateString,
+                    statistics,
+                    insights,
+                    monthName: format(startDate, 'MMMM yyyy')
+                }
+
+                // Cache the report
+                this.monthlyReports[monthKey] = monthlyData
+                this.currentMonthlyReport = monthlyData
+
+                return monthlyData
+            } catch (error: any) {
+                this.error = error.message || 'Failed to fetch monthly report'
+                console.error('Error fetching monthly report:', error)
+                throw error
+            } finally {
+                this.loadingMonthly = false
             }
         },
 
@@ -159,11 +223,14 @@ export const useReportsStore = defineStore('reports', {
         reset() {
             this.dailyReports = {}
             this.weeklyReports = {}
+            this.monthlyReports = {}
             this.currentDailyReport = null
             this.currentWeeklyReport = null
+            this.currentMonthlyReport = null
             this.statistics = null
             this.loadingDaily = false
             this.loadingWeekly = false
+            this.loadingMonthly = false
             this.loadingStatistics = false
             this.error = null
         },
@@ -200,6 +267,15 @@ export const useReportsStore = defineStore('reports', {
             }
         },
 
+        // Invalidate monthly cache for date
+        invalidateMonthly(date: string) {
+            const monthKey = this.getMonthKey(date)
+            delete this.monthlyReports[monthKey]
+            if (this.currentMonthlyReport && this.getMonthKey(this.currentMonthlyReport.startDate) === monthKey) {
+                this.currentMonthlyReport = null
+            }
+        },
+
         // Invalidate multiple dates at once (useful for bulk operations)
         invalidateDateRange(startDate: string, endDate: string) {
             const start = new Date(startDate)
@@ -220,6 +296,9 @@ export const useReportsStore = defineStore('reports', {
             }
             if (this.currentWeeklyReport) {
                 this.invalidateWeekly(this.currentWeeklyReport.weekStartDate)
+            }
+            if (this.currentMonthlyReport) {
+                this.invalidateMonthly(this.currentMonthlyReport.startDate)
             }
         },
 
