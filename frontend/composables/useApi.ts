@@ -13,7 +13,7 @@ import type {
     TimeEntryUpdateRequest,
     BulkTimeEntryRequest,
     WeeklySummary,
-    MonthlyStatistics
+    MonthlyStatistics, SpotifyTokenResponse, SpotifyRefreshResponse
 } from '~/types/api'
 
 export const useApi = () => {
@@ -211,5 +211,25 @@ export const useReportsApi = () => {
             apiCall<any>('/reports/productivity-insights', {
                 query: { startDate, endDate }
             })
+    }
+}
+
+export const useSpotifyApi = () => {
+    const { apiCall } = useApi()
+
+    return {
+        getSpotifyToken: (code: string, redirectUri: string) =>
+            apiCall<SpotifyTokenResponse>('/spotify/token', {
+                method: 'POST',
+                body: {
+                    code,
+                    redirectUri
+                }
+            }),
+
+        getSpotifyRefreshToken: (refreshToken: string) => apiCall<SpotifyRefreshResponse>('/spotify/refresh', {
+            method: 'POST',
+            body: {refresh_token: refreshToken}
+        })
     }
 }
