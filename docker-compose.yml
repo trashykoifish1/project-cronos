@@ -59,6 +59,10 @@ services:
 
       # CORS Configuration (for development)
       SPRING_WEB_CORS_ALLOWED_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://frontend:3000}
+      # Spotify Integration
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID:-}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET:-}
+
     ports:
       - "8080:8080"
     networks:
@@ -84,13 +88,14 @@ services:
       # Nuxt Configuration
       NUXT_PUBLIC_API_BASE: ${API_BASE_URL:-http://localhost:8080/api}
       NUXT_PUBLIC_APP_MODE: ${APP_MODE:-development}
+      NUXT_PUBLIC_SPOTIFY_REDIRECT_URI: ${SPOTIFY_REDIRECT_URI:-http://127.0.0.1:3000/auth/spotify/callback}
 
       # Node Configuration
       NODE_ENV: ${NODE_ENV:-development}
       NUXT_HOST: 0.0.0.0
       NUXT_PORT: 3000
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     networks:
       - timetracker-network
     depends_on:

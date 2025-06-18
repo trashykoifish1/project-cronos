@@ -175,6 +175,7 @@
         :style="{ width: '600px' }"
     >
       <div class="space-y-6">
+        <!-- Application Settings -->
         <div>
           <h3 class="text-lg font-semibold text-app-primary mb-3">Application Settings</h3>
           <div class="space-y-4">
@@ -193,9 +194,98 @@
           </div>
         </div>
 
-        <div class="text-center py-4 text-app-secondary">
-          <i class="pi pi-cog text-3xl mb-2"></i>
-          <div>Advanced settings coming soon!</div>
+        <!-- Spotify Integration Section -->
+        <div>
+          <h3 class="text-lg font-semibold text-app-primary mb-3 flex items-center">
+            <i class="pi pi-music text-app-green-600 mr-2"></i>
+            Spotify Integration
+          </h3>
+
+          <div class="space-y-4">
+            <!-- Connection Status -->
+            <div class="flex items-center justify-between p-4 bg-app-tertiary rounded-lg border border-app-primary">
+              <div class="flex items-center space-x-3">
+                <div
+                    class="w-3 h-3 rounded-full"
+                    :class="spotify.isConnected.value ? 'bg-green-500' : 'bg-gray-400'"
+                ></div>
+                <div>
+                  <div class="text-sm font-medium text-app-primary">
+                    {{ spotify.isConnected.value ? 'Connected' : 'Not Connected' }}
+                  </div>
+                  <div class="text-xs text-app-secondary">
+                    {{ spotify.isConnected.value
+                      ? 'Your Spotify account is connected and ready to use'
+                      : 'Connect your Spotify account to control music from the timesheet'
+                    }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Connect/Disconnect Button -->
+              <Button
+                  v-if="!spotify.isConnected.value && spotifyConfig.isConfigured.value"
+                  label="Connect"
+                  icon="pi pi-link"
+                  @click="handleSpotifyConnect"
+                  :loading="spotify.isInitializing.value"
+                  size="small"
+              />
+              <Button
+                  v-else-if="!spotify.isConnected.value && !spotifyConfig.isConfigured.value"
+                  label="Setup Required"
+                  icon="pi pi-cog"
+                  severity="warning"
+                  outlined
+                  disabled
+                  size="small"
+              />
+              <Button
+                  v-else
+                  label="Disconnect"
+                  icon="pi pi-times"
+                  severity="danger"
+                  outlined
+                  @click="handleSpotifyDisconnect"
+                  size="small"
+              />
+            </div>
+
+            <!-- Error Display -->
+            <div v-if="spotify.error.value" class="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <div class="flex items-start space-x-2">
+                <i class="pi pi-exclamation-triangle text-red-500 mt-0.5"></i>
+                <div class="text-sm text-red-700">
+                  {{ spotify.error.value }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Spotify Features Info -->
+            <div class="text-sm text-app-secondary space-y-2">
+              <div class="font-medium text-app-primary">Available Features:</div>
+              <ul class="list-disc list-inside space-y-1 text-xs">
+                <li>View currently playing track</li>
+                <li>Play, pause, and skip tracks</li>
+                <li>Control volume</li>
+                <li>Quick access from timesheet page</li>
+              </ul>
+            </div>
+
+            <!-- Requirements Note -->
+            <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div class="flex items-start space-x-2">
+                <i class="pi pi-info-circle text-blue-500 mt-0.5"></i>
+                <div class="text-sm text-blue-700">
+                  <div class="font-medium mb-1">Requirements:</div>
+                  <div class="text-xs">
+                    You need an active Spotify Premium subscription to control playback.
+                    Free accounts can only view currently playing tracks.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -203,7 +293,6 @@
         <Button label="Close" @click="showSettings = false" />
       </template>
     </Dialog>
-
     <!-- Help Dialog -->
     <Dialog
         v-model:visible="showHelp"
@@ -289,6 +378,9 @@
 <script setup lang="ts">
 // Composables
 const toast = useToast()
+const spotify = useSpotify()
+const spotifyConfig = useSpotifyConfig()
+const confirm = useConfirm()
 
 // Reactive state for layout
 const showSettings = ref(false)
@@ -349,6 +441,35 @@ const menuItems = ref([
   }
 ])
 
+const handleSpotifyConnect = () => {
+  console.log('Initiating Spotify connection...')
+  // Clear any existing auth state before starting
+  if (import.meta.client) {
+    localStorage.removeItem('spotify_auth_state')
+  }
+  spotify.initiateAuth()
+}
+
+const handleSpotifyDisconnect = () => {
+  confirm.require({
+    message: 'Are you sure you want to disconnect your Spotify account? You will lose access to music controls.',
+    header: 'Disconnect Spotify',
+    icon: 'pi pi-exclamation-triangle',
+    rejectProps: {
+      label: 'Cancel',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Disconnect',
+      severity: 'danger'
+    },
+    accept: () => {
+      spotify.disconnect()
+    }
+  })
+}
+
 // Methods
 const showPlaceholder = (feature: string) => {
   toast.add({
@@ -364,6 +485,10 @@ const navigateAndClose = (path: string) => {
   showMobileMenu.value = false
   showReportsSubmenu.value = false
 }
+
+onMounted(() => {
+  spotify.initialize()
+})
 </script>
 
 <style scoped>

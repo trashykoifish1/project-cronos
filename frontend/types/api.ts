@@ -239,3 +239,19 @@ export interface MonthlyReport {
     insights: MonthlyInsights
     monthName: string
 }
+
+// Types for Spotify API responses
+export interface SpotifyTokenResponse {
+    access_token: string
+    refresh_token: string
+    expires_in: number
+    token_type: string
+    scope: string
+}
+
+export interface SpotifyRefreshResponse {
+    access_token: string
+    expires_in: number
+    token_type: string
+    scope: string
+}

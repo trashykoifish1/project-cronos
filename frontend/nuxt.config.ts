@@ -70,7 +70,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8080/api',
-      appMode: process.env.NUXT_PUBLIC_APP_MODE || 'local'
+      appMode: process.env.NUXT_PUBLIC_APP_MODE || 'local',
+      spotifyClientId: process.env.NUXT_PUBLIC_SPOTIFY_CLIENT_ID || '',
+      spotifyRedirectUri: process.env.NUXT_PUBLIC_SPOTIFY_REDIRECT_URI || 'http://127.0.0.1:3000/auth/spotify/callback'
     }
   },
 
@@ -103,6 +105,7 @@ export default defineNuxtConfig({
 
   // Development server configuration
   devServer: {
+    host: '127.0.0.1',
     port: 3000
   }
 })

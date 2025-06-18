@@ -23,15 +23,37 @@
         </div>
 
         <!-- Mobile Sidebar Content -->
-        <div class="h-full pb-16">
-          <TaskSidebar @task-selected="showMobileSidebar = false" />
+        <div class="h-full pb-16 flex flex-col">
+          <!-- Task Selection -->
+          <div class="flex-1 min-h-0">
+            <TaskSidebar @task-selected="showMobileSidebar = false" />
+          </div>
+
+          <!-- Spotify Card for Mobile -->
+          <div class="flex-shrink-0 border-t border-app-primary">
+            <div style="padding: 1rem;">
+              <SpotifyCard @open-settings="handleOpenSettings" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Desktop Task Sidebar -->
-    <div class="hidden lg:block w-80 flex-shrink-0 bg-primary border-r border-primary">
-      <TaskSidebar />
+    <div class="hidden lg:block w-80 flex-shrink-0 bg-app-primary border-r border-app-primary">
+      <div class="h-full flex flex-col">
+        <!-- Task Selection Section -->
+        <div class="flex-1 min-h-0">
+          <TaskSidebar />
+        </div>
+
+        <!-- Spotify Integration Section -->
+        <div class="flex-shrink-0 border-t border-app-primary">
+          <div style="padding: 1rem;">
+            <SpotifyCard @open-settings="handleOpenSettings" />
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Timesheet Area -->
@@ -306,10 +328,12 @@
 
 <script setup lang="ts">
 import { format, addDays, subDays } from 'date-fns'
+import {useSpotifyStore} from "~/stores/spotify";
 
 // Stores
 const timesheetStore = useTimesheetStore()
 const tasksStore = useTasksStore()
+const spotifyStore = useSpotifyStore()
 
 // Composables
 const toast = useToast()
@@ -514,6 +538,17 @@ const handleKeydown = (event: KeyboardEvent) => {
       }
       break
   }
+}
+
+const handleOpenSettings = () => {
+  // For now, show a helpful toast since we can't directly open the settings dialog from here
+  // In a real implementation, you might use a global event bus or store
+  toast.add({
+    severity: 'info',
+    summary: 'Open Settings',
+    detail: 'Click the settings (⚙️) icon in the top navigation bar to connect Spotify',
+    life: 5000
+  })
 }
 
 // Initialize
