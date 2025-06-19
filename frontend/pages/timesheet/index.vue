@@ -39,20 +39,22 @@
       </div>
     </div>
 
+
     <!-- Desktop Task Sidebar -->
     <div class="hidden lg:block w-80 flex-shrink-0 bg-app-primary border-r border-app-primary">
       <div class="h-full flex flex-col">
-        <!-- Task Selection Section -->
-        <div class="flex-1 min-h-0">
-          <TaskSidebar />
-        </div>
-
         <!-- Spotify Integration Section -->
         <div class="flex-shrink-0 border-t border-app-primary">
           <div style="padding: 1rem;">
             <SpotifyCard @open-settings="handleOpenSettings" />
           </div>
         </div>
+        <!-- Task Selection Section -->
+        <div class="flex-1 min-h-0">
+          <TaskSidebar />
+        </div>
+
+
       </div>
     </div>
 

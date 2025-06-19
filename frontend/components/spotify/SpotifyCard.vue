@@ -1,5 +1,5 @@
 <template>
-  <Card class="spotify-card">
+  <Card class="spotify-card glassmorphism-card">
     <template #header>
       <div style="padding: 1rem 1rem 0.5rem 1rem;">
         <div class="flex items-center justify-between">
@@ -7,16 +7,32 @@
             <i class="pi pi-play-circle text-app-green-600"></i>
             <span class="text-sm font-semibold text-app-primary">Now Playing</span>
           </div>
-          <Button
-              icon="pi pi-refresh"
-              size="small"
-              severity="secondary"
-              text
-              @click="refreshPlayback"
-              :loading="isRefreshing"
-              v-tooltip.bottom="'Refresh'"
-              class="w-8 h-8"
-          />
+
+          <div class="flex items-center space-x-1">
+            <!-- Fullscreen Button (only show when connected and has track) -->
+            <Button
+                v-if="spotify.isConnected.value && spotify.hasActiveTrack.value"
+                icon="pi pi-window-maximize"
+                size="small"
+                severity="secondary"
+                text
+                @click="openFullscreen"
+                v-tooltip.bottom="'Fullscreen'"
+                class="w-8 h-8"
+            />
+
+            <!-- Refresh Button -->
+            <Button
+                icon="pi pi-refresh"
+                size="small"
+                severity="secondary"
+                text
+                @click="refreshPlayback"
+                :loading="isRefreshing"
+                v-tooltip.bottom="'Refresh'"
+                class="w-8 h-8"
+            />
+          </div>
         </div>
       </div>
     </template>
@@ -188,6 +204,12 @@
       </div>
     </template>
   </Card>
+
+  <!-- Fullscreen Component -->
+  <SpotifyFullscreen
+      v-model:visible="showFullscreen"
+      @close="closeFullscreen"
+  />
 </template>
 
 <script setup lang="ts">
@@ -198,7 +220,9 @@ const toast = useToast()
 // Local state
 const isRefreshing = ref(false)
 const volumeValue = ref(50)
+const showFullscreen = ref(false)
 
+// Emit for parent components
 const emit = defineEmits(['open-settings'])
 
 // Computed
@@ -215,10 +239,8 @@ watch(() => spotify.volume.value, (newVolume) => {
 let refreshInterval: NodeJS.Timeout | null = null
 
 onMounted(() => {
-  // Initialize Spotify if not already done
   spotify.initialize()
 
-  // Set up auto-refresh for connected users
   if (spotify.isConnected.value) {
     startAutoRefresh()
   }
@@ -264,7 +286,6 @@ const handleVolumeChange = async () => {
     await spotify.setVolume(volumeValue.value)
   } catch (error) {
     console.error('Error setting volume:', error)
-    // Revert to previous value on error
     volumeValue.value = spotify.volume.value
   }
 }
@@ -285,7 +306,6 @@ const refreshPlayback = async () => {
 const startAutoRefresh = () => {
   if (refreshInterval) return
 
-  // Refresh every 5 seconds when connected
   refreshInterval = setInterval(() => {
     if (spotify.isConnected.value) {
       spotify.getCurrentPlayback()
@@ -307,10 +327,50 @@ const openSpotify = () => {
 const openSettings = () => {
   emit('open-settings')
 }
+
+const openFullscreen = () => {
+  showFullscreen.value = true
+}
+
+const closeFullscreen = () => {
+  showFullscreen.value = false
+}
 </script>
 
 <style scoped>
-/* Custom slider styling using CSS variables that should be available */
+/* Glassmorphism effect */
+.glassmorphism-card {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Dark theme glassmorphism */
+.dark .glassmorphism-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Override PrimeVue card styles for glassmorphism */
+.glassmorphism-card :deep(.p-card) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.glassmorphism-card :deep(.p-card-body) {
+  background: transparent;
+  padding: 0;
+}
+
+.glassmorphism-card :deep(.p-card-content) {
+  background: transparent;
+  padding: 0;
+}
+
+/* Custom slider styling */
 .spotify-volume-slider :deep(.p-slider-handle) {
   background-color: rgb(var(--green-600));
   border-color: rgb(var(--green-600));
@@ -318,5 +378,16 @@ const openSettings = () => {
 
 .spotify-volume-slider :deep(.p-slider-range) {
   background-color: rgb(var(--green-600));
+}
+
+/* Fullscreen drawer styling */
+.spotify-fullscreen-drawer :deep(.p-drawer) {
+  border: none;
+  border-radius: 0;
+}
+
+.spotify-fullscreen-drawer :deep(.p-drawer-content) {
+  padding: 0;
+  overflow: hidden;
 }
 </style>
